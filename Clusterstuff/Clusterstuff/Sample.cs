@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Clusterstuff {
@@ -13,6 +14,22 @@ namespace Clusterstuff {
 
         private double[] data;
 
+        public static Sample[] Load(string fileName) {
+            string[] lines = File.ReadAllLines(fileName);
+
+            List<Sample> samples = new List<Sample>();
+
+            foreach (string line in lines) {
+                if (line.Length == 0)
+                    continue;
+
+                string[] values = line.Split(',');
+                samples.Add(new Sample(values.Take(4).Select(v => double.Parse(v)).ToArray(), values.Last()));
+            }
+
+            return samples.ToArray();
+        }
+
         public Sample(double[] data, string name) {
             this.data = data;
             Name = name;
@@ -24,7 +41,7 @@ namespace Clusterstuff {
 
             for (int i = 0; i < data.Length; i++)
                 squaredDist += (data[i] - other.data[i]) * (data[i] - other.data[i]);
-            
+
             return Math.Sqrt(squaredDist);
         }
     }
