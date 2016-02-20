@@ -9,6 +9,7 @@ using System.Windows.Forms;
 namespace Visualizer {
     public partial class Form : System.Windows.Forms.Form {
         private Sample[] samples = Sample.Load(@"..\..\..\Clusterstuff\iris.dat");
+        private Sample[] rotated;
         private MaxMin maxMin;
 
         private float scaleFactor = 0.0f;
@@ -20,8 +21,6 @@ namespace Visualizer {
         private bool showInfo = true;
 
         private Font font = new Font("Consolas", 10);
-
-        Sample[] rotated;
 
         public Form() {
             InitializeComponent();
@@ -95,10 +94,10 @@ namespace Visualizer {
                 int y = MapY((float)s.Data[1]);
 
                 brush.Color = Color.Black;
-                e.Graphics.FillEllipse(brush, x - (s.Center ? 1.5f : 0.5f), y - (s.Center ? 1.5f : 0.5f), circleDiameter + (s.Center ? 3 : 1), circleDiameter + +(s.Center ? 3 : 1));
+                e.Graphics.FillEllipse(brush, x - circleDiameter / 2 - (s.Center ? 1.5f : 0.5f), y - circleDiameter / 2 - (s.Center ? 1.5f : 0.5f), circleDiameter + (s.Center ? 3 : 1), circleDiameter + (s.Center ? 3 : 1));
 
                 brush.Color = HslColor((int)((double)s.Cluster / maxMin.ClusterCount * 239), 239, 120);
-                e.Graphics.FillEllipse(brush, x, y, circleDiameter, circleDiameter);
+                e.Graphics.FillEllipse(brush, x - circleDiameter / 2, y - circleDiameter / 2, circleDiameter, circleDiameter);
             }
 
             if (showInfo) {
@@ -209,31 +208,31 @@ namespace Visualizer {
 
         private void Rotate() {
             Matrix4x4 xMatrix1 = new Matrix4x4(new double[4, 4] {
-                {Math.Cos(alphaX1), 0, -Math.Sin(alphaX1), 0},
-                {0,                1, 0,                 0},
-                {Math.Sin(alphaX1), 0, Math.Cos(alphaX1),  0},
-                {0,                0, 0,                 1}
+                { Math.Cos(alphaX1), 0, -Math.Sin(alphaX1), 0 },
+                { 0,                 1, 0,                  0 },
+                { Math.Sin(alphaX1), 0, Math.Cos(alphaX1),  0 },
+                { 0,                 0, 0,                  1 }
             });
 
             Matrix4x4 yMatrix1 = new Matrix4x4(new double[4, 4] {
-                {1, 0,                0,                 0},
-                {0, Math.Cos(alphaY1), -Math.Sin(alphaY1), 0},
-                {0, Math.Sin(alphaY1), Math.Cos(alphaY1),  0},
-                {0, 0,                0,                 1}
+                { 1, 0,                 0,                  0 },
+                { 0, Math.Cos(alphaY1), -Math.Sin(alphaY1), 0 },
+                { 0, Math.Sin(alphaY1), Math.Cos(alphaY1),  0 },
+                { 0, 0,                 0,                  1 }
             });
 
             Matrix4x4 xMatrix2 = new Matrix4x4(new double[4, 4] {
-                {Math.Cos(alphaX2), 0, 0, -Math.Sin(alphaX2)},
-                {0,                 1, 0, 0},
-                {0,                 0, 1, 0},
-                {Math.Sin(alphaX2), 0, 0, Math.Cos(alphaX2)}
+                { Math.Cos(alphaX2), 0, 0, -Math.Sin(alphaX2) },
+                { 0,                 1, 0, 0                  },
+                { 0,                 0, 1, 0                  },
+                { Math.Sin(alphaX2), 0, 0, Math.Cos(alphaX2)  }
             });
 
             Matrix4x4 yMatrix2 = new Matrix4x4(new double[4, 4] {
-                {1, 0,                 0, 0},
-                {0, Math.Cos(alphaY2), 0, -Math.Sin(alphaY2)},
-                {0, 0,                 1, 0},
-                {0, Math.Sin(alphaY2), 0, Math.Cos(alphaY2)}
+                { 1, 0,                 0, 0                  },
+                { 0, Math.Cos(alphaY2), 0, -Math.Sin(alphaY2) },
+                { 0, 0,                 1, 0                  },
+                { 0, Math.Sin(alphaY2), 0, Math.Cos(alphaY2)  }
             });
 
             rotated = new Sample[samples.Length];
