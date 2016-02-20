@@ -1,5 +1,6 @@
 ﻿using Clusterstuff;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -78,14 +79,21 @@ namespace Visualizer {
         }
 
         private void RandomizeData() {
-            samples = new Sample[500];
-
+            const int max = 5;
             Random r = new Random();
 
-            const int max = 5;
+            samples = new Sample[500];
+            Sample[] centers = new Sample[r.Next(3, 6)];
 
-            for (int i = 0; i < samples.Length; i++)
+            int i = 0;
+
+            foreach (Sample s in centers)
+                samples[i] = centers[i++] = new Sample(new double[] { r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max }, "");
+
+            for (; i < samples.Length; i++) {
                 samples[i] = new Sample(new double[] { r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max }, "");
+                samples[i].Vector += (centers[r.Next() % centers.Length].Vector - samples[i].Vector) * (double)r.Next(int.MaxValue / 2, int.MaxValue) / int.MaxValue;
+            }
 
             maxMin = new MaxMin(samples);
             maxMin.Run();
