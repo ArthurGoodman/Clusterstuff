@@ -22,6 +22,9 @@ namespace Visualizer {
 
         private Font font = new Font("Consolas", 10);
 
+        private Matrix4x4 perspective;
+        private double perspectiveOffset = 7;
+
         public Form() {
             InitializeComponent();
 
@@ -41,6 +44,24 @@ namespace Visualizer {
             maxMin.Run();
 
             Reset();
+
+            CreatePerspective();
+        }
+
+        private void CreatePerspective() {
+            double fov = Math.PI / scaleFactor * perspectiveOffset;
+
+            double near = 100;
+            double far = 500;
+
+            double s = 1 / Math.Tan(fov / 2);
+
+            perspective = new Matrix4x4(new double[4, 4] {
+                { s, 0, 0,                           0                             },
+                { 0, s, 0,                           0                             },
+                { 0, 0, (far + near) / (far - near), 2 * near * far / (near - far) },
+                { 0, 0, 1,                           0                             }
+            });
         }
 
         private void MouseWheelEvent(object sender, MouseEventArgs e) {
@@ -90,8 +111,14 @@ namespace Visualizer {
             const int circleDiameter = 7;
 
             foreach (Sample s in rotated) {
-                int x = MapX((float)s.Data[0]);
-                int y = MapY((float)s.Data[1]);
+                Vector4 v = new Vector4(s.Data.Data) + new Vector4(new double[] { 0, 0, perspectiveOffset, 0 });
+
+                v[3] = 1;
+                perspective.Map(v);
+                v /= v[3];
+
+                int x = MapX((float)v[0]);
+                int y = MapY((float)v[1]);
 
                 brush.Color = Color.Black;
                 e.Graphics.FillEllipse(brush, x - circleDiameter / 2 - (s.Center ? 1.5f : 0.5f), y - circleDiameter / 2 - (s.Center ? 1.5f : 0.5f), circleDiameter + (s.Center ? 3 : 1), circleDiameter + (s.Center ? 3 : 1));
@@ -119,7 +146,7 @@ namespace Visualizer {
             offsetX = 0;
             offsetX = 0;
 
-            scaleFactor = 100.0f;
+            scaleFactor = 75.0f;
 
             alphaX1 = 0;
             alphaY1 = 0;
@@ -164,11 +191,11 @@ namespace Visualizer {
                 offsetY += (e.Location.Y - lastPos.Y) / scaleFactor;
             } else if (e.Button == MouseButtons.Right) {
                 if (ModifierKeys == Keys.Control) {
-                    alphaX2 += (e.Location.X - lastPos.X) / scaleFactor / 4;
-                    alphaY2 += (e.Location.Y - lastPos.Y) / scaleFactor / 4;
+                    alphaX2 += (e.Location.X - lastPos.X) / 400.0f;
+                    alphaY2 += (e.Location.Y - lastPos.Y) / 400.0f;
                 } else {
-                    alphaX1 += (e.Location.X - lastPos.X) / scaleFactor / 4;
-                    alphaY1 += (e.Location.Y - lastPos.Y) / scaleFactor / 4;
+                    alphaX1 += (e.Location.X - lastPos.X) / 400.0f;
+                    alphaY1 += (e.Location.Y - lastPos.Y) / 400.0f;
                 }
 
                 Rotate();
@@ -249,7 +276,7 @@ namespace Visualizer {
                 yMatrix2.Map(rotated[i].Data);
             }
 
-            rotated = rotated.OrderBy(s => s.Data[2] + s.Data[3]).ToArray();
+            rotated = rotated.OrderByDescending(s => s.Data[2]).ToArray();
         }
     }
 }
