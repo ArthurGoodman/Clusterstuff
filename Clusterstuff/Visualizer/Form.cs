@@ -108,10 +108,11 @@ namespace Visualizer {
             SolidBrush brush = new SolidBrush(Color.Red);
             pen.Color = Color.Black;
 
-            const int circleDiameter = 7;
-
             foreach (Sample s in rotated) {
                 Vector4 v = new Vector4(s.Data.Data) + new Vector4(new double[] { 0, 0, perspectiveOffset, 0 });
+
+                //float circleDiameter = (float)(7 + v[3] * 2);
+                float circleDiameter = 7;
 
                 v[3] = 1;
                 perspective.Map(v);
