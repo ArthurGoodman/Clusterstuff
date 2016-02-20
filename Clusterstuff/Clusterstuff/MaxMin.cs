@@ -31,7 +31,7 @@ namespace Clusterstuff {
             Center = new Vector4();
 
             foreach (Sample s in samples)
-                Center += s.Data;
+                Center += s.Vector;
 
             Center /= samples.Length;
         }

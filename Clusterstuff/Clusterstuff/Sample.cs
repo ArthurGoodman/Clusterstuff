@@ -7,7 +7,7 @@ namespace Clusterstuff {
     public class Sample : IComparable {
         private static int counter = 0;
 
-        public Vector4 Data { get; set; }
+        public Vector4 Vector { get; set; }
         public string Name { get; set; }
         public int Index { get; set; }
         public int Cluster { get; set; }
@@ -30,7 +30,7 @@ namespace Clusterstuff {
         }
 
         public Sample(double[] data, string name) {
-            Data = new Vector4(data);
+            Vector = new Vector4(data);
             Name = name;
             Index = counter++;
         }
@@ -39,7 +39,7 @@ namespace Clusterstuff {
             double squaredDist = 0;
 
             for (int i = 0; i < 4; i++)
-                squaredDist += (Data[i] - other.Data[i]) * (Data[i] - other.Data[i]);
+                squaredDist += (Vector[i] - other.Vector[i]) * (Vector[i] - other.Vector[i]);
 
             return Math.Sqrt(squaredDist);
         }
@@ -54,11 +54,11 @@ namespace Clusterstuff {
         }
 
         public string Inspect() {
-            return string.Format("{0}:\t{1}\t<{2} {3} {4} {5}>", Index, Name, Data[0], Data[1], Data[2], Data[3]);
+            return string.Format("{0}:\t{1}\t<{2} {3} {4} {5}>", Index, Name, Vector[0], Vector[1], Vector[2], Vector[3]);
         }
 
         public Sample Clone() {
-            Sample clone = new Sample(Data.Data, Name);
+            Sample clone = new Sample(Vector.Data, Name);
             clone.Index = Index;
             clone.Cluster = Cluster;
             clone.Center = Center;

@@ -8,7 +8,9 @@ using System.Windows.Forms;
 
 namespace Visualizer {
     public partial class Form : System.Windows.Forms.Form {
-        private Sample[] samples = Sample.Load(@"..\..\..\Clusterstuff\iris.dat");
+        private static string fileName = @"..\..\..\Clusterstuff\iris.dat";
+
+        private Sample[] samples;
         private Sample[] rotated;
         private MaxMin maxMin;
 
@@ -18,9 +20,12 @@ namespace Visualizer {
 
         private Point lastPos;
 
-        private bool showInfo = true;
-
         private Font font = new Font("Consolas", 10);
+
+        private bool showInfo = true;
+        private bool visualize4thD = false;
+        private bool usePerspective = true;
+        private bool showAxes = true;
 
         private Matrix4x4 perspective;
         private double perspectiveOffset = 7;
@@ -40,8 +45,7 @@ namespace Visualizer {
 
             CenterToScreen();
 
-            maxMin = new MaxMin(samples);
-            maxMin.Run();
+            LoadData();
 
             Reset();
 
@@ -62,6 +66,31 @@ namespace Visualizer {
                 { 0, 0, (far + near) / (far - near), 2 * near * far / (near - far) },
                 { 0, 0, 1,                           0                             }
             });
+        }
+
+        private void LoadData() {
+            samples = Sample.Load(fileName);
+
+            maxMin = new MaxMin(samples);
+            maxMin.Run();
+
+            Rotate();
+        }
+
+        private void RandomizeData() {
+            samples = new Sample[500];
+
+            Random r = new Random();
+
+            const int max = 5;
+
+            for (int i = 0; i < samples.Length; i++)
+                samples[i] = new Sample(new double[] { r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max }, "");
+
+            maxMin = new MaxMin(samples);
+            maxMin.Run();
+
+            Rotate();
         }
 
         private void MouseWheelEvent(object sender, MouseEventArgs e) {
@@ -97,11 +126,13 @@ namespace Visualizer {
 
             Pen pen = new Pen(Color.Gray);
 
-            int xAxis = ClientSize.Width / 2 + (int)(offsetX * scaleFactor);
-            int yAxis = ClientSize.Height / 2 + (int)(offsetY * scaleFactor);
+            if (showAxes) {
+                int xAxis = ClientSize.Width / 2 + (int)(offsetX * scaleFactor);
+                int yAxis = ClientSize.Height / 2 + (int)(offsetY * scaleFactor);
 
-            e.Graphics.DrawLine(pen, new Point(xAxis, 0), new Point(xAxis, ClientSize.Height));
-            e.Graphics.DrawLine(pen, new Point(0, yAxis), new Point(ClientSize.Width, yAxis));
+                e.Graphics.DrawLine(pen, new Point(xAxis, 0), new Point(xAxis, ClientSize.Height));
+                e.Graphics.DrawLine(pen, new Point(0, yAxis), new Point(ClientSize.Width, yAxis));
+            }
 
             e.Graphics.TranslateTransform(ClientSize.Width / 2, ClientSize.Height / 2);
 
@@ -109,14 +140,15 @@ namespace Visualizer {
             pen.Color = Color.Black;
 
             foreach (Sample s in rotated) {
-                Vector4 v = new Vector4(s.Data.Data) + new Vector4(new double[] { 0, 0, perspectiveOffset, 0 });
+                Vector4 v = new Vector4(s.Vector.Data) + new Vector4(new double[] { 0, 0, perspectiveOffset, 0 });
 
-                //float circleDiameter = (float)(7 + v[3] * 2);
-                float circleDiameter = 7;
+                float circleDiameter = (float)(7 + (visualize4thD ? v[3] * 2 : 0));
 
-                v[3] = 1;
-                perspective.Map(v);
-                v /= v[3];
+                if (usePerspective) {
+                    v[3] = 1;
+                    perspective.Map(v);
+                    v /= v[3];
+                }
 
                 int x = MapX((float)v[0]);
                 int y = MapY((float)v[1]);
@@ -136,7 +168,7 @@ namespace Visualizer {
                 brush.Color = Color.FromArgb(128, Color.Black);
                 e.Graphics.FillRectangle(brush, rect);
 
-                string info = string.Format("Scale={0}, alphaX1={1}, alphaY1={2}, alphaX2={3}, alphaY2={4}, Alpha={5}", scaleFactor, alphaX1, alphaY1, alphaX2, alphaY2, MaxMin.Alpha);
+                string info = string.Format("Scale={0}, alphaX1={1}, alphaY1={2}, alphaX2={3}, alphaY2={4}, Alpha={5}, ClusterCount={6}", scaleFactor, alphaX1, alphaY1, alphaX2, alphaY2, MaxMin.Alpha, maxMin.ClusterCount);
 
                 brush.Color = Color.White;
                 e.Graphics.DrawString(info, font, brush, rect);
@@ -225,6 +257,26 @@ namespace Visualizer {
                     showInfo = !showInfo;
                     break;
 
+                case Keys.P:
+                    usePerspective = !usePerspective;
+                    break;
+
+                case Keys.X:
+                    showAxes = !showAxes;
+                    break;
+
+                case Keys.V:
+                    visualize4thD = !visualize4thD;
+                    break;
+
+                case Keys.R:
+                    RandomizeData();
+                    break;
+
+                case Keys.L:
+                    LoadData();
+                    break;
+
                 case Keys.Back:
                     Reset();
                     break;
@@ -263,21 +315,19 @@ namespace Visualizer {
                 { 0, Math.Sin(alphaY2), 0, Math.Cos(alphaY2)  }
             });
 
-            rotated = new Sample[samples.Length];
+            rotated = samples.Select(s => s.Clone()).ToArray();
 
-            for (int i = 0; i < rotated.Length; i++) {
-                rotated[i] = samples[i].Clone();
+            foreach (Sample s in rotated) {
+                s.Vector -= maxMin.Center;
 
-                rotated[i].Data -= maxMin.Center;
+                xMatrix1.Map(s.Vector);
+                yMatrix1.Map(s.Vector);
 
-                xMatrix1.Map(rotated[i].Data);
-                yMatrix1.Map(rotated[i].Data);
-
-                xMatrix2.Map(rotated[i].Data);
-                yMatrix2.Map(rotated[i].Data);
+                xMatrix2.Map(s.Vector);
+                yMatrix2.Map(s.Vector);
             }
 
-            rotated = rotated.OrderByDescending(s => s.Data[2]).ToArray();
+            rotated = rotated.OrderByDescending(s => s.Vector[2]).ToArray();
         }
     }
 }
