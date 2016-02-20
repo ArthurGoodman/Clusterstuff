@@ -32,6 +32,10 @@
             this.ClientSize = new System.Drawing.Size(284, 261);
             this.Name = "Form";
             this.Text = "Clusterstuff";
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.PaintEvent);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDownEvent);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MouseDownEvent);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MouseMoveEvent);
             this.ResumeLayout(false);
 
         }

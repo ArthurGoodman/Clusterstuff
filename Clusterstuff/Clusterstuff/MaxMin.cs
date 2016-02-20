@@ -2,10 +2,15 @@
 using System.Linq;
 
 namespace Clusterstuff {
-    class MaxMin {
+    public class MaxMin {
+        private static double alpha = 0.5;
         public static double Alpha {
             get {
-                return 0.5;
+                return alpha;
+            }
+
+            set {
+                alpha = Math.Max(0, Math.Min(value, 1));
             }
         }
 

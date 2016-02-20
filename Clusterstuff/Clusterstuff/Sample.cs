@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 
 namespace Clusterstuff {
-    class Sample {
+    public class Sample {
         private static int counter = 0;
 
         public string Name { get; set; }
@@ -12,7 +12,7 @@ namespace Clusterstuff {
         public int Cluster { get; set; }
         public bool Center { get; set; }
 
-        private double[] data;
+        public double[] Data { get; set; }
 
         public static Sample[] Load(string fileName) {
             string[] lines = File.ReadAllLines(fileName);
@@ -31,7 +31,7 @@ namespace Clusterstuff {
         }
 
         public Sample(double[] data, string name) {
-            this.data = data;
+            Data = data;
             Name = name;
             Index = counter++;
         }
@@ -39,8 +39,8 @@ namespace Clusterstuff {
         public double Distance(Sample other) {
             double squaredDist = 0;
 
-            for (int i = 0; i < data.Length; i++)
-                squaredDist += (data[i] - other.data[i]) * (data[i] - other.data[i]);
+            for (int i = 0; i < Data.Length; i++)
+                squaredDist += (Data[i] - other.Data[i]) * (Data[i] - other.Data[i]);
 
             return Math.Sqrt(squaredDist);
         }
