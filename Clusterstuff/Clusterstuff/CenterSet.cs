@@ -30,10 +30,9 @@ namespace Clusterstuff {
 
         public void Assign(Sample sample) {
             sample.Cluster = centers
-                .Select(c => new Tuple<Sample, double>(c, sample.Distance(c)))
-                .OrderBy(t => t.Item2)
-                .First()
-                .Item1.Cluster;
+                .Select(c => new Tuple<double, Sample>(sample.Distance(c), c))
+                .Min()
+                .Item2.Cluster;
         }
 
         public double TypicalDistance() {
@@ -47,6 +46,11 @@ namespace Clusterstuff {
                     dist += centers[i].Distance(centers[j]);
 
             return MaxMin.Alpha * dist / (centers.Count * (centers.Count - 1) / 2);
+        }
+
+        public void Reset() {
+            nextCluster = 0;
+            centers.Clear();
         }
     }
 }

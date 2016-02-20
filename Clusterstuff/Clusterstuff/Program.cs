@@ -9,11 +9,18 @@ namespace Clusterstuff {
             MaxMin maxMin = new MaxMin(samples);
             maxMin.Run();
 
+            Console.WriteLine("Cluster centers:");
+
+            foreach (Sample s in samples.Where(s => s.Center))
+                Console.WriteLine(s.Inspect());
+
+            Console.WriteLine();
+
             for (int i = 0; i < maxMin.ClusterCount; i++) {
-                Console.Write(string.Format("Cluster {0}:", i));
+                Console.WriteLine(string.Format("Cluster {0}:", i));
 
                 foreach (Sample s in samples.Where(s => s.Cluster == i))
-                    Console.Write(string.Format(" {0}", s.Index));
+                    Console.WriteLine(s.Inspect());
 
                 Console.WriteLine();
             }
