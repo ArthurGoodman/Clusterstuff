@@ -94,7 +94,8 @@ namespace Visualizer {
                 int x = MapX((float)s.Data[0]);
                 int y = MapY((float)s.Data[1]);
 
-                e.Graphics.DrawEllipse(pen, x, y, circleDiameter, circleDiameter);
+                brush.Color = Color.Black;
+                e.Graphics.FillEllipse(brush, x - (s.Center ? 1.5f : 0.5f), y - (s.Center ? 1.5f : 0.5f), circleDiameter + (s.Center ? 3 : 1), circleDiameter + +(s.Center ? 3 : 1));
 
                 brush.Color = HslColor((int)((double)s.Cluster / maxMin.ClusterCount * 239), 239, 120);
                 e.Graphics.FillEllipse(brush, x, y, circleDiameter, circleDiameter);
