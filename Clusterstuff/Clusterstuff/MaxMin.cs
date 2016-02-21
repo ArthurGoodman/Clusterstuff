@@ -53,7 +53,7 @@ namespace Clusterstuff {
                     .Select(s => new Tuple<double, Sample>(centers.Distances(s).Min(), s))
                     .Max();
 
-                if (max.Item1 <= centers.TypicalDistance())
+                if (max == null || max.Item1 <= centers.TypicalDistance())
                     break;
 
                 centers.Add(max.Item2);

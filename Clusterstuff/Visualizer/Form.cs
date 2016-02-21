@@ -1,6 +1,5 @@
 ﻿using Clusterstuff;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -92,7 +91,7 @@ namespace Visualizer {
 
             for (; i < samples.Length; i++) {
                 samples[i] = new Sample(new double[] { r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max }, "");
-                samples[i].Vector += (centers[r.Next() % centers.Length].Vector - samples[i].Vector) * (double)r.Next(int.MaxValue / 2, int.MaxValue) / int.MaxValue;
+                samples[i].Vector += (centers[r.Next() % centers.Length].Vector - samples[i].Vector) * r.Next(int.MaxValue / 2, int.MaxValue) / int.MaxValue;
             }
 
             maxMin = new MaxMin(samples);
