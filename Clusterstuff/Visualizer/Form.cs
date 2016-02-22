@@ -332,12 +332,12 @@ namespace Visualizer {
 
             foreach (Sample s in rotated) {
                 s.Vector -= maxMin.Center;
+                
+                xMatrix2.Map(s.Vector);
+                yMatrix2.Map(s.Vector);
 
                 xMatrix1.Map(s.Vector);
                 yMatrix1.Map(s.Vector);
-
-                xMatrix2.Map(s.Vector);
-                yMatrix2.Map(s.Vector);
             }
 
             rotated = rotated.OrderByDescending(s => s.Vector[2]).ToArray();
