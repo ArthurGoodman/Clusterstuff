@@ -46,19 +46,12 @@ namespace Clusterstuff {
                 s.Reset();
 
             centers.Add(samples[0]);
-
-            bool forget = true;
-
+            
             while (true) {
                 Tuple<double, Sample> max = samples
                     .Where(s => !s.Center)
                     .Select(s => new Tuple<double, Sample>(centers.Distances(s).Min(), s))
                     .Max();
-
-                if (forget && centers.Count == 1) {
-                    forget = false;
-                    centers.Forget();
-                }
 
                 if (max == null || max.Item1 <= centers.TypicalDistance())
                     break;
