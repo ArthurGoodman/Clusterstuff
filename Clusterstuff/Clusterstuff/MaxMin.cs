@@ -19,6 +19,8 @@ namespace Clusterstuff {
 
         public Vector4 Center { get; private set; }
 
+        public bool UseForget { get; set; }
+
         public int ClusterCount {
             get {
                 return centers.Count;
@@ -26,6 +28,8 @@ namespace Clusterstuff {
         }
 
         public MaxMin(Sample[] samples) {
+            UseForget = false;
+
             this.samples = samples;
 
             Center = new Vector4();
@@ -46,12 +50,19 @@ namespace Clusterstuff {
                 s.Reset();
 
             centers.Add(samples[0]);
+
+            bool forget = UseForget;
             
             while (true) {
                 Tuple<double, Sample> max = samples
                     .Where(s => !s.Center)
                     .Select(s => new Tuple<double, Sample>(centers.Distances(s).Min(), s))
                     .Max();
+
+                if(forget && centers.Count == 1) {
+                    forget = false;
+                    centers.Forget();
+                }
 
                 if (max == null || max.Item1 <= centers.TypicalDistance())
                     break;

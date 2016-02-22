@@ -276,6 +276,12 @@ namespace Visualizer {
                     visualize4thD = !visualize4thD;
                     break;
 
+                case Keys.F:
+                    maxMin.UseForget = !maxMin.UseForget;
+                    maxMin.Run();
+                    Rotate();
+                    break;
+
                 case Keys.R:
                     RandomizeData();
                     break;
