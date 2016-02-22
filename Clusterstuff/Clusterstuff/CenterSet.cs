@@ -52,5 +52,12 @@ namespace Clusterstuff {
             nextCluster = 0;
             centers.Clear();
         }
+
+        public void Forget() {
+            foreach (Sample s in centers)
+                s.Center = false;
+
+            centers.Clear();
+        }
     }
 }
