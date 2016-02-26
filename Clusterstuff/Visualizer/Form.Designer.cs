@@ -28,10 +28,15 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.trackBar = new System.Windows.Forms.TrackBar();
             this.label = new System.Windows.Forms.Label();
+            this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.algorithmToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.maxMinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.kMeansToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar)).BeginInit();
+            this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox
@@ -40,7 +45,7 @@
             this.pictureBox.Location = new System.Drawing.Point(0, 0);
             this.pictureBox.Margin = new System.Windows.Forms.Padding(0);
             this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(284, 233);
+            this.pictureBox.Size = new System.Drawing.Size(284, 209);
             this.pictureBox.TabIndex = 0;
             this.pictureBox.TabStop = false;
             this.pictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.PaintEvent);
@@ -54,13 +59,13 @@
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.pictureBox, 0, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 24);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(284, 261);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(284, 237);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // tableLayoutPanel2
@@ -71,7 +76,7 @@
             this.tableLayoutPanel2.Controls.Add(this.trackBar, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.label, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 233);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 209);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
@@ -101,8 +106,43 @@
             this.label.Name = "label";
             this.label.Size = new System.Drawing.Size(43, 28);
             this.label.TabIndex = 2;
-            this.label.Text = "Alpha:";
+            this.label.Text = "Param:";
             this.label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // menuStrip
+            // 
+            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.algorithmToolStripMenuItem});
+            this.menuStrip.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip.Name = "menuStrip";
+            this.menuStrip.Size = new System.Drawing.Size(284, 24);
+            this.menuStrip.TabIndex = 3;
+            this.menuStrip.Text = "menuStrip";
+            // 
+            // algorithmToolStripMenuItem
+            // 
+            this.algorithmToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.maxMinToolStripMenuItem,
+            this.kMeansToolStripMenuItem});
+            this.algorithmToolStripMenuItem.Name = "algorithmToolStripMenuItem";
+            this.algorithmToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
+            this.algorithmToolStripMenuItem.Text = "Algorithm";
+            // 
+            // maxMinToolStripMenuItem
+            // 
+            this.maxMinToolStripMenuItem.Checked = true;
+            this.maxMinToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.maxMinToolStripMenuItem.Name = "maxMinToolStripMenuItem";
+            this.maxMinToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.maxMinToolStripMenuItem.Text = "MaxMin";
+            this.maxMinToolStripMenuItem.Click += new System.EventHandler(this.CreateMaxMin);
+            // 
+            // kMeansToolStripMenuItem
+            // 
+            this.kMeansToolStripMenuItem.Name = "kMeansToolStripMenuItem";
+            this.kMeansToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.kMeansToolStripMenuItem.Text = "K-Means";
+            this.kMeansToolStripMenuItem.Click += new System.EventHandler(this.CreateKMeans);
             // 
             // Form
             // 
@@ -110,6 +150,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.menuStrip);
             this.Name = "Form";
             this.Text = "Clusterstuff";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDownEvent);
@@ -118,7 +159,10 @@
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar)).EndInit();
+            this.menuStrip.ResumeLayout(false);
+            this.menuStrip.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -129,6 +173,10 @@
         private System.Windows.Forms.TrackBar trackBar;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Label label;
+        private System.Windows.Forms.MenuStrip menuStrip;
+        private System.Windows.Forms.ToolStripMenuItem algorithmToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem maxMinToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem kMeansToolStripMenuItem;
     }
 }
 

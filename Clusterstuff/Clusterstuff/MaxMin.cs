@@ -2,9 +2,9 @@
 using System.Linq;
 
 namespace Clusterstuff {
-    public class MaxMin {
-        private static double alpha = 0.5;
-        public static double Alpha {
+    public class MaxMin : IClusteringAlgorithm {
+        private double alpha = 0.5;
+        public double Param {
             get {
                 return alpha;
             }
@@ -14,12 +14,9 @@ namespace Clusterstuff {
             }
         }
 
-        private Sample[] samples;
-        private CenterSet centers = new CenterSet();
+        public Sample[] Samples { get; set; }
 
-        public Vector4 Center { get; private set; }
-
-        public bool UseForget { get; set; }
+        private CenterSet centers;
 
         public int ClusterCount {
             get {
@@ -27,42 +24,26 @@ namespace Clusterstuff {
             }
         }
 
-        public MaxMin(Sample[] samples) {
-            UseForget = false;
-
-            this.samples = samples;
-
-            Center = new Vector4();
-
-            foreach (Sample s in samples)
-                Center += s.Vector;
-
-            Center /= samples.Length;
+        public MaxMin() {
+            centers = new CenterSet(this);
         }
 
         public void Run() {
-            if (samples.Length == 0)
+            if (Samples.Length == 0)
                 return;
 
             centers.Reset();
 
-            foreach (Sample s in samples)
+            foreach (Sample s in Samples)
                 s.Reset();
 
-            centers.Add(samples[0]);
+            centers.Add(Samples[0]);
 
-            bool forget = UseForget;
-            
             while (true) {
-                Tuple<double, Sample> max = samples
+                Tuple<double, Sample> max = Samples
                     .Where(s => !s.Center)
                     .Select(s => new Tuple<double, Sample>(centers.Distances(s).Min(), s))
                     .Max();
-
-                if(forget && centers.Count == 1) {
-                    forget = false;
-                    centers.Forget();
-                }
 
                 if (max == null || max.Item1 <= centers.TypicalDistance())
                     break;
@@ -70,7 +51,7 @@ namespace Clusterstuff {
                 centers.Add(max.Item2);
             }
 
-            foreach (Sample s in samples) {
+            foreach (Sample s in Samples) {
                 if (s.Center)
                     continue;
 

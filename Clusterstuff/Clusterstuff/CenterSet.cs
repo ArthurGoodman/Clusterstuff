@@ -7,14 +7,17 @@ namespace Clusterstuff {
         private List<Sample> centers;
         private int nextCluster = 0;
 
+        private IClusteringAlgorithm alg;
+
         public int Count {
             get {
                 return centers.Count;
             }
         }
 
-        public CenterSet() {
+        public CenterSet(IClusteringAlgorithm alg) {
             centers = new List<Sample>();
+            this.alg = alg;
         }
 
         public void Add(Sample sample) {
@@ -45,7 +48,7 @@ namespace Clusterstuff {
                 for (int j = 0; j < i; j++)
                     dist += centers[i].Distance(centers[j]);
 
-            return MaxMin.Alpha * dist / (centers.Count * (centers.Count - 1) / 2);
+            return alg.Param * dist / (centers.Count * (centers.Count - 1) / 2);
         }
 
         public void Reset() {

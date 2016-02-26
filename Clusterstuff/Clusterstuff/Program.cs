@@ -6,7 +6,8 @@ namespace Clusterstuff {
         static void Main(string[] args) {
             Sample[] samples = Sample.Load(@"..\..\iris.dat");
 
-            MaxMin maxMin = new MaxMin(samples);
+            IClusteringAlgorithm maxMin = new MaxMin();
+            maxMin.Samples = samples;
             maxMin.Run();
 
             Console.WriteLine("Cluster centers:");

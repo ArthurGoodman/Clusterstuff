@@ -12,7 +12,7 @@ namespace Visualizer {
 
         private Sample[] samples;
         private Sample[] rotated;
-        private MaxMin maxMin;
+        private IClusteringAlgorithm alg = new MaxMin();
 
         private float scaleFactor = 0.0f;
         private float offsetX = 0, offsetY = 0;
@@ -29,6 +29,8 @@ namespace Visualizer {
 
         private Matrix4x4 perspective;
         private double perspectiveOffset = 7;
+
+        private Vector4 center;
 
         public Form() {
             InitializeComponent();
@@ -52,6 +54,15 @@ namespace Visualizer {
             CreatePerspective();
         }
 
+        private void CalculateCenter() {
+            center = new Vector4();
+
+            foreach (Sample s in samples)
+                center += s.Vector;
+
+            center /= samples.Length;
+        }
+
         private void CreatePerspective() {
             double fov = Math.PI / scaleFactor * perspectiveOffset;
 
@@ -68,13 +79,18 @@ namespace Visualizer {
             });
         }
 
-        private void LoadData() {
-            samples = Sample.Load(fileName);
+        private void LoadSamples() {
+            CalculateCenter();
 
-            maxMin = new MaxMin(samples);
-            maxMin.Run();
+            alg.Samples = samples;
+            alg.Run();
 
             Rotate();
+        }
+
+        private void LoadData() {
+            samples = Sample.Load(fileName);
+            LoadSamples();
         }
 
         private void RandomizeData() {
@@ -94,10 +110,7 @@ namespace Visualizer {
                 samples[i].Vector += (centers[r.Next() % centers.Length].Vector - samples[i].Vector) * r.Next(int.MaxValue / 2, int.MaxValue) / int.MaxValue;
             }
 
-            maxMin = new MaxMin(samples);
-            maxMin.Run();
-
-            Rotate();
+            LoadSamples();
         }
 
         private void MouseWheelEvent(object sender, MouseEventArgs e) {
@@ -163,7 +176,7 @@ namespace Visualizer {
                 brush.Color = Color.Black;
                 e.Graphics.FillEllipse(brush, x - circleDiameter / 2 - (s.Center ? 1.5f : 0.5f), y - circleDiameter / 2 - (s.Center ? 1.5f : 0.5f), circleDiameter + (s.Center ? 3 : 1), circleDiameter + (s.Center ? 3 : 1));
 
-                brush.Color = HslColor((int)((double)s.Cluster / maxMin.ClusterCount * 239), 239, 120);
+                brush.Color = HslColor((int)((double)s.Cluster / alg.ClusterCount * 239), 239, 120);
                 e.Graphics.FillEllipse(brush, x - circleDiameter / 2, y - circleDiameter / 2, circleDiameter, circleDiameter);
             }
 
@@ -175,7 +188,7 @@ namespace Visualizer {
                 brush.Color = Color.FromArgb(128, Color.Black);
                 e.Graphics.FillRectangle(brush, rect);
 
-                string info = string.Format("Scale={0}, alphaX1={1}, alphaY1={2}, alphaX2={3}, alphaY2={4}, Alpha={5}, ClusterCount={6}", scaleFactor, alphaX1, alphaY1, alphaX2, alphaY2, MaxMin.Alpha, maxMin.ClusterCount);
+                string info = string.Format("Scale={0}, alphaX1={1}, alphaY1={2}, alphaX2={3}, alphaY2={4}, Param={5}, ClusterCount={6}", scaleFactor, alphaX1, alphaY1, alphaX2, alphaY2, alg.Param, alg.ClusterCount);
 
                 brush.Color = Color.White;
                 e.Graphics.DrawString(info, font, brush, rect);
@@ -219,9 +232,33 @@ namespace Visualizer {
             KeyDownEvent(sender, e);
         }
 
+        private void CreateMaxMin(object sender, EventArgs e) {
+            foreach (ToolStripMenuItem item in ((ToolStripMenuItem)menuStrip.Items[0]).DropDownItems)
+                item.Checked = false;
+
+            ((ToolStripMenuItem)sender).Checked = true;
+
+            alg = new MaxMin();
+            LoadSamples();
+
+            trackBar.Value = (int)(100 * alg.Param);
+        }
+
+        private void CreateKMeans(object sender, EventArgs e) {
+            foreach (ToolStripMenuItem item in ((ToolStripMenuItem)menuStrip.Items[0]).DropDownItems)
+                item.Checked = false;
+
+            ((ToolStripMenuItem)sender).Checked = true;
+
+            alg = new KMeans();
+            LoadSamples();
+
+            trackBar.Value = (int)(100 * alg.Param);
+        }
+
         private void TrackBarValueChanged(object sender, EventArgs e) {
-            MaxMin.Alpha = trackBar.Value / 100.0;
-            maxMin.Run();
+            alg.Param = trackBar.Value / 100.0;
+            alg.Run();
             Rotate();
         }
 
@@ -276,12 +313,6 @@ namespace Visualizer {
                     visualize4thD = !visualize4thD;
                     break;
 
-                case Keys.F:
-                    maxMin.UseForget = !maxMin.UseForget;
-                    maxMin.Run();
-                    Rotate();
-                    break;
-
                 case Keys.R:
                     RandomizeData();
                     break;
@@ -331,8 +362,8 @@ namespace Visualizer {
             rotated = samples.Select(s => s.Clone()).ToArray();
 
             foreach (Sample s in rotated) {
-                s.Vector -= maxMin.Center;
-                
+                s.Vector -= center;
+
                 xMatrix2.Map(s.Vector);
                 yMatrix2.Map(s.Vector);
 
