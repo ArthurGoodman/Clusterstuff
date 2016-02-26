@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Clusterstuff {
-    class CenterSet {
+    class CenterSet : IEnumerable {
         private List<Sample> centers;
         private int nextCluster = 0;
 
@@ -61,6 +62,20 @@ namespace Clusterstuff {
                 s.Center = false;
 
             centers.Clear();
+        }
+
+        public IEnumerator GetEnumerator() {
+            return centers.GetEnumerator();
+        }
+
+        public Sample this[int i] {
+            get {
+                return centers[i];
+            }
+
+            set {
+                centers[i] = value;
+            }
         }
     }
 }

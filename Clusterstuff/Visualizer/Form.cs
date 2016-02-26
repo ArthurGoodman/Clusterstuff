@@ -103,10 +103,10 @@ namespace Visualizer {
             int i = 0;
 
             foreach (Sample s in centers)
-                samples[i] = centers[i++] = new Sample(new double[] { r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max }, "");
+                samples[i] = centers[i++] = new Sample(new double[] { r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max });
 
             for (; i < samples.Length; i++) {
-                samples[i] = new Sample(new double[] { r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max }, "");
+                samples[i] = new Sample(new double[] { r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max });
                 samples[i].Vector += (centers[r.Next() % centers.Length].Vector - samples[i].Vector) * r.Next(int.MaxValue / 2, int.MaxValue) / int.MaxValue;
             }
 

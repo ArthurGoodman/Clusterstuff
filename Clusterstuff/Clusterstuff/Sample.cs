@@ -8,7 +8,6 @@ namespace Clusterstuff {
         private static int counter = 0;
 
         public Vector4 Vector { get; set; }
-        public string Name { get; set; }
         public int Index { get; set; }
         public int Cluster { get; set; }
         public bool Center { get; set; }
@@ -23,15 +22,14 @@ namespace Clusterstuff {
                     continue;
 
                 string[] values = line.Split(',');
-                samples.Add(new Sample(values.Take(4).Select(v => double.Parse(v)).ToArray(), values.Last()));
+                samples.Add(new Sample(values.Take(4).Select(v => double.Parse(v)).ToArray()));
             }
 
             return samples.ToArray();
         }
 
-        public Sample(double[] data, string name) {
+        public Sample(double[] data) {
             Vector = new Vector4(data);
-            Name = name;
             Index = counter++;
         }
 
@@ -54,11 +52,11 @@ namespace Clusterstuff {
         }
 
         public string Inspect() {
-            return string.Format("{0}:\t{1}\t<{2} {3} {4} {5}>", Index, Name, Vector[0], Vector[1], Vector[2], Vector[3]);
+            return string.Format("{0}:\t<{1} {2} {3} {4}>", Index, Vector[0], Vector[1], Vector[2], Vector[3]);
         }
 
         public Sample Clone() {
-            Sample clone = new Sample(Vector.Data, Name);
+            Sample clone = new Sample(Vector.Data);
             clone.Index = Index;
             clone.Cluster = Cluster;
             clone.Center = Center;

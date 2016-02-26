@@ -57,5 +57,13 @@ namespace Clusterstuff {
                 Data[i] = value;
             }
         }
+
+        public bool Equals(Vector4 v) {
+            for (int i = 0; i < 4; i++)
+                if (Data[i] != v.Data[i])
+                    return false;
+
+            return true;
+        }
     }
 }
