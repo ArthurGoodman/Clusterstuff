@@ -8,7 +8,7 @@ namespace DataAnalysis {
         private List<Sample> centers;
         private int nextCluster = 0;
 
-        private IClusteringAlgorithm alg;
+        private IAlgorithm alg;
 
         public int Count {
             get {
@@ -16,7 +16,7 @@ namespace DataAnalysis {
             }
         }
 
-        public CenterSet(IClusteringAlgorithm alg) {
+        public CenterSet(IAlgorithm alg) {
             centers = new List<Sample>();
             this.alg = alg;
         }

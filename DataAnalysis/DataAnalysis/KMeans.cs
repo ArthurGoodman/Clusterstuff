@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace DataAnalysis {
-    public class KMeans : IClusteringAlgorithm {
+    public class KMeans : IAlgorithm {
         public int ClusterCount {
             get {
                 return k;
@@ -20,6 +20,12 @@ namespace DataAnalysis {
         }
 
         public Sample[] Samples { get; set; }
+
+        public string Info {
+            get {
+                throw new NotImplementedException();
+            }
+        }
 
         private CenterSet centers;
         private CenterSet newCenters;

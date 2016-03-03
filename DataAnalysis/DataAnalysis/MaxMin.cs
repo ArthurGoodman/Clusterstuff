@@ -2,7 +2,7 @@
 using System.Linq;
 
 namespace DataAnalysis {
-    public class MaxMin : IClusteringAlgorithm {
+    public class MaxMin : IAlgorithm {
         private double alpha = 0.5;
         public double Param {
             get {
@@ -21,6 +21,12 @@ namespace DataAnalysis {
         public int ClusterCount {
             get {
                 return centers.Count;
+            }
+        }
+
+        public string Info {
+            get {
+                throw new NotImplementedException();
             }
         }
 

@@ -11,7 +11,7 @@ namespace DataAnalysis {
 
         private Sample[] samples;
         private Sample[] rotated;
-        private IClusteringAlgorithm alg = new MaxMin();
+        private IAlgorithm alg = new MaxMin();
 
         private float scaleFactor = 0.0f;
         private float offsetX = 0, offsetY = 0;
@@ -22,9 +22,10 @@ namespace DataAnalysis {
         private Font font = new Font("Consolas", 10);
 
         private bool showInfo = true;
-        private bool visualize4thD = false;
+        private bool visualize4thD = true;
         private bool usePerspective = true;
         private bool showAxes = true;
+        private bool algorithmActive = true;
 
         private Matrix4x4 perspective;
         private double perspectiveOffset = 7;
@@ -78,13 +79,18 @@ namespace DataAnalysis {
             });
         }
 
+        private void Calculate() {
+            if (algorithmActive) {
+                alg.Run();
+                Rotate();
+            }
+        }
+
         private void LoadSamples() {
             CalculateCenter();
 
             alg.Samples = samples;
-            alg.Run();
-
-            Rotate();
+            Calculate();
         }
 
         private void LoadData() {
@@ -231,9 +237,9 @@ namespace DataAnalysis {
             KeyDownEvent(sender, e);
         }
 
-        private void CreateMaxMin(object sender, EventArgs e) {
-            foreach (ToolStripMenuItem item in ((ToolStripMenuItem)menuStrip.Items[0]).DropDownItems)
-                item.Checked = false;
+        private void maxMinToolStripMenuItem_Click(object sender, EventArgs e) {
+            kMeansToolStripMenuItem.Checked = false;
+            perceptronToolStripMenuItem.Checked = false;
 
             ((ToolStripMenuItem)sender).Checked = true;
 
@@ -243,9 +249,9 @@ namespace DataAnalysis {
             trackBar.Value = (int)(100 * alg.Param);
         }
 
-        private void CreateKMeans(object sender, EventArgs e) {
-            foreach (ToolStripMenuItem item in ((ToolStripMenuItem)menuStrip.Items[0]).DropDownItems)
-                item.Checked = false;
+        private void kMeansToolStripMenuItem_Click(object sender, EventArgs e) {
+            maxMinToolStripMenuItem.Checked = false;
+            perceptronToolStripMenuItem.Checked = false;
 
             ((ToolStripMenuItem)sender).Checked = true;
 
@@ -255,10 +261,53 @@ namespace DataAnalysis {
             trackBar.Value = (int)(100 * alg.Param);
         }
 
+        private void perceptronToolStripMenuItem_Click(object sender, EventArgs e) {
+            maxMinToolStripMenuItem.Checked = false;
+            kMeansToolStripMenuItem.Checked = false;
+
+            ((ToolStripMenuItem)sender).Checked = true;
+        }
+
+        private void activeToolStripMenuItem_Click(object sender, EventArgs e) {
+            algorithmActive = !algorithmActive;
+            Calculate();
+        }
+
+        private void showInfoToolStripMenuItem1_Click(object sender, EventArgs e) {
+            MessageBox.Show(alg.Info);
+        }
+
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e) {
+            LoadData();
+        }
+
+        private void randomizeToolStripMenuItem_Click(object sender, EventArgs e) {
+            RandomizeData();
+        }
+
+        private void perspectiveToolStripMenuItem_Click(object sender, EventArgs e) {
+            usePerspective = !usePerspective;
+        }
+
+        private void thDimentionToolStripMenuItem_Click(object sender, EventArgs e) {
+            visualize4thD = !visualize4thD;
+        }
+
+        private void showInfoToolStripMenuItem_Click(object sender, EventArgs e) {
+            showInfo = !showInfo;
+        }
+
+        private void axesToolStripMenuItem_Click(object sender, EventArgs e) {
+            showAxes = !showAxes;
+        }
+
+        private void resetToolStripMenuItem_Click(object sender, EventArgs e) {
+            Reset();
+        }
+
         private void TrackBarValueChanged(object sender, EventArgs e) {
             alg.Param = trackBar.Value / 100.0;
-            alg.Run();
-            Rotate();
+            Calculate();
         }
 
         private void MouseMoveEvent(object sender, MouseEventArgs e) {
@@ -294,34 +343,6 @@ namespace DataAnalysis {
                         ShowNormal();
                     else
                         ShowFullscreen();
-                    break;
-
-                case Keys.I:
-                    showInfo = !showInfo;
-                    break;
-
-                case Keys.P:
-                    usePerspective = !usePerspective;
-                    break;
-
-                case Keys.X:
-                    showAxes = !showAxes;
-                    break;
-
-                case Keys.V:
-                    visualize4thD = !visualize4thD;
-                    break;
-
-                case Keys.R:
-                    RandomizeData();
-                    break;
-
-                case Keys.L:
-                    LoadData();
-                    break;
-
-                case Keys.Back:
-                    Reset();
                     break;
             }
 
