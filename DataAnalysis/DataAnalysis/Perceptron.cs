@@ -93,8 +93,9 @@ namespace DataAnalysis {
         private void BuildInfo() {
             info = string.Format("{0} iterations\n\n", iterations);
 
+            int i = 0;
             foreach (Vector v in w)
-                info += string.Format("{0}*x1 + {1}*x2 + {2}*x3 + {3}*x4 + {4}\n", v[0], v[1], v[2], v[3], v[4]);
+                info += string.Format("d{0}(x) = {1:g4}*x1 {2} {3:g4}*x2 {4} {5:g4}*x3 {6} {7:g4}*x4 {8} {9:g4}\n", i++, v[0], v[1] > 0 ? '+' : '-', Math.Abs(v[1]), v[2] > 0 ? '+' : '-', Math.Abs(v[2]), v[3] > 0 ? '+' : '-', Math.Abs(v[3]), v[4] > 0 ? '+' : '-', Math.Abs(v[4]));
         }
     }
 }

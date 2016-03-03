@@ -23,6 +23,8 @@ namespace DataAnalysis {
         private Matrix4x4 perspective;
         private double perspectiveOffset = 7;
 
+        private bool tabPressed = false;
+
         public Form() {
             InitializeComponent();
 
@@ -127,9 +129,9 @@ namespace DataAnalysis {
                 e.Graphics.FillEllipse(brush, x - circleDiameter / 2, y - circleDiameter / 2, circleDiameter, circleDiameter);
             }
 
-            if (showInfo) {
-                e.Graphics.TranslateTransform(-ClientSize.Width / 2, -ClientSize.Height / 2);
+            e.Graphics.TranslateTransform(-ClientSize.Width / 2, -ClientSize.Height / 2);
 
+            if (showInfo) {
                 Rectangle rect = new Rectangle(0, 0, ClientSize.Width, 16);
 
                 brush.Color = Color.FromArgb(128, Color.Black);
@@ -139,6 +141,21 @@ namespace DataAnalysis {
 
                 brush.Color = Color.White;
                 e.Graphics.DrawString(info, font, brush, rect);
+            }
+
+            if (tabPressed) {
+                Rectangle rect = new Rectangle(ClientSize.Width / 2 - ClientSize.Width / 4, ClientSize.Height / 2 - ClientSize.Height / 4, ClientSize.Width / 2, ClientSize.Height / 2);
+
+                brush.Color = Color.FromArgb(128, Color.Black);
+                e.Graphics.FillRectangle(brush, ClientRectangle);
+                e.Graphics.FillRectangle(brush, rect);
+
+                StringFormat format = new StringFormat();
+                format.Alignment = StringAlignment.Center;
+                format.LineAlignment = StringAlignment.Center;
+
+                brush.Color = Color.White;
+                e.Graphics.DrawString(engine.Alg.Info, font, brush, rect, format);
             }
         }
 
@@ -166,12 +183,64 @@ namespace DataAnalysis {
             WindowState = FormWindowState.Maximized;
         }
 
+        private void KeyDownEvent(object sender, KeyEventArgs e) {
+            switch (e.KeyCode) {
+                case Keys.Escape:
+                    if (IsFullscreen())
+                        ShowNormal();
+                    else
+                        Close();
+                    break;
+
+                case Keys.F11:
+                    if (IsFullscreen())
+                        ShowNormal();
+                    else
+                        ShowFullscreen();
+                    break;
+
+                case Keys.Tab:
+                    tabPressed = true;
+                    break;
+            }
+
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
+
+        private void KeyUpEvent(object sender, KeyEventArgs e) {
+            switch (e.KeyCode) {
+                case Keys.Tab:
+                    tabPressed = false;
+                    break;
+            }
+
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
+
         private void MouseDownEvent(object sender, MouseEventArgs e) {
+            lastPos = e.Location;
+        }
+
+        private void MouseMoveEvent(object sender, MouseEventArgs e) {
+            if (e.Button == MouseButtons.Left) {
+                offsetX += (e.Location.X - lastPos.X) / scaleFactor;
+                offsetY += (e.Location.Y - lastPos.Y) / scaleFactor;
+            } else if (e.Button == MouseButtons.Right) {
+                engine.UpdateAngles(new Point(e.Location.X - lastPos.X, e.Location.Y - lastPos.Y), ModifierKeys == Keys.Control);
+                engine.Rotate();
+            }
+
             lastPos = e.Location;
         }
 
         private void TrackBarKeyDownEvent(object sender, KeyEventArgs e) {
             KeyDownEvent(sender, e);
+        }
+
+        private void TrackBarKeyUpEvent(object sender, KeyEventArgs e) {
+            KeyUpEvent(sender, e);
         }
 
         private void maxMinToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -247,10 +316,6 @@ namespace DataAnalysis {
             engine.Calculate();
         }
 
-        private void showInfoToolStripMenuItem1_Click(object sender, EventArgs e) {
-            MessageBox.Show(engine.Alg.Info, "Info");
-        }
-
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
             Close();
         }
@@ -258,39 +323,6 @@ namespace DataAnalysis {
         private void TrackBarValueChanged(object sender, EventArgs e) {
             engine.Alg.Param = trackBar.Value / 100.0;
             engine.Calculate();
-        }
-
-        private void MouseMoveEvent(object sender, MouseEventArgs e) {
-            if (e.Button == MouseButtons.Left) {
-                offsetX += (e.Location.X - lastPos.X) / scaleFactor;
-                offsetY += (e.Location.Y - lastPos.Y) / scaleFactor;
-            } else if (e.Button == MouseButtons.Right) {
-                engine.UpdateAngles(new Point(e.Location.X - lastPos.X, e.Location.Y - lastPos.Y), ModifierKeys == Keys.Control);
-                engine.Rotate();
-            }
-
-            lastPos = e.Location;
-        }
-
-        private void KeyDownEvent(object sender, KeyEventArgs e) {
-            switch (e.KeyCode) {
-                case Keys.Escape:
-                    if (IsFullscreen())
-                        ShowNormal();
-                    else
-                        Close();
-                    break;
-
-                case Keys.F11:
-                    if (IsFullscreen())
-                        ShowNormal();
-                    else
-                        ShowFullscreen();
-                    break;
-            }
-
-            e.Handled = true;
-            e.SuppressKeyPress = true;
         }
     }
 }
