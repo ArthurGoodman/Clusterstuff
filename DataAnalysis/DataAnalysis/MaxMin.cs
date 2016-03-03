@@ -2,7 +2,7 @@
 using System.Linq;
 
 namespace DataAnalysis {
-    public class MaxMin : IAlgorithm {
+    class MaxMin : IAlgorithm {
         private double alpha = 0.5;
         public double Param {
             get {

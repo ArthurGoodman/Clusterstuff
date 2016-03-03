@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DataAnalysis {
+﻿namespace DataAnalysis {
     class Matrix4x4 {
         private double[,] data;
 

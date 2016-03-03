@@ -2,7 +2,7 @@
 using System.Linq;
 
 namespace DataAnalysis {
-    public class Vector4 : IComparable {
+    class Vector4 : IComparable {
         public double[] Data { get; private set; }
 
         public Vector4() {

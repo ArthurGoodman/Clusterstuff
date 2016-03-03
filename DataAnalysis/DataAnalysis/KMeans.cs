@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace DataAnalysis {
-    public class KMeans : IAlgorithm {
+    class KMeans : IAlgorithm {
         private int k = 3;
         public double Param {
             get {

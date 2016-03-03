@@ -47,13 +47,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CenterSet.cs" />
+    <Compile Include="DataEngine.cs" />
     <Compile Include="Form.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form.Designer.cs">
       <DependentUpon>Form.cs</DependentUpon>
     </Compile>
-    <Compile Include="IClusteringAlgorithm.cs" />
+    <Compile Include="IAlgorithm.cs" />
     <Compile Include="KMeans.cs" />
     <Compile Include="Matrix4x4.cs" />
     <Compile Include="MaxMin.cs" />

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 
 namespace DataAnalysis {
-    public class Sample : IComparable {
+    class Sample : IComparable {
         public Vector4 Vector { get; set; }
         public int Cluster { get; set; }
         public bool Center { get; set; }

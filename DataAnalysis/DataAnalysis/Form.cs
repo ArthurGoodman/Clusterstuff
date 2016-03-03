@@ -1,21 +1,15 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace DataAnalysis {
-    public partial class Form : System.Windows.Forms.Form {
-        private static string fileName = @"..\..\iris.dat";
-
-        private Sample[] samples;
-        private Sample[] rotated;
-        private IAlgorithm alg = new MaxMin();
+    partial class Form : System.Windows.Forms.Form {
+        private DataEngine engine = new DataEngine();
 
         private float scaleFactor = 0.0f;
         private float offsetX = 0, offsetY = 0;
-        private float alphaX1 = 0, alphaY1 = 0, alphaX2 = 0, alphaY2 = 0;
 
         private Point lastPos;
 
@@ -25,13 +19,9 @@ namespace DataAnalysis {
         private bool visualize4thD = true;
         private bool usePerspective = true;
         private bool showAxes = true;
-        private bool algorithmActive = true;
 
         private Matrix4x4 perspective;
         private double perspectiveOffset = 7;
-
-        private Vector4 center;
-        private int clusterCount;
 
         public Form() {
             InitializeComponent();
@@ -46,22 +36,12 @@ namespace DataAnalysis {
             Width = Screen.PrimaryScreen.WorkingArea.Width / 2;
             Height = (int)(Screen.PrimaryScreen.WorkingArea.Height / 1.75);
 
+            engine.LoadData();
+
             CenterToScreen();
 
-            LoadData();
-
             Reset();
-
             CreatePerspective();
-        }
-
-        private void CalculateCenter() {
-            center = new Vector4();
-
-            foreach (Sample s in samples)
-                center += s.Vector;
-
-            center /= samples.Length;
         }
 
         private void CreatePerspective() {
@@ -78,59 +58,6 @@ namespace DataAnalysis {
                 { 0, 0, (far + near) / (far - near), 2 * near * far / (near - far) },
                 { 0, 0, 1,                           0                             }
             });
-        }
-
-        private void Calculate() {
-            if (algorithmActive) {
-                alg.Run();
-                CountClusters();
-            }
-
-            Rotate();
-        }
-
-        private void CountClusters() {
-            clusterCount = samples.Select(s => s.Cluster).Max() + 1;
-        }
-
-        private void LoadSamples() {
-            CalculateCenter();
-            CountClusters();
-
-            alg.Samples = samples;
-            Calculate();
-        }
-
-        private void LoadData() {
-            samples = Sample.Load(fileName);
-            LoadSamples();
-        }
-
-        private void RandomizeData() {
-            const int max = 5;
-            Random r = new Random();
-
-            samples = new Sample[500];
-            Sample[] centers = new Sample[r.Next(3, 6)];
-
-            int i = 0;
-
-            foreach (Sample s in centers) {
-                samples[i] = centers[i] = new Sample(new double[] { r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max });
-                centers[i].Cluster = i;
-                i++;
-            }
-
-            for (; i < samples.Length; i++) {
-                samples[i] = new Sample(new double[] { r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max });
-
-                Sample c = centers[r.Next() % centers.Length];
-
-                samples[i].Vector += (c.Vector - samples[i].Vector) * r.Next(int.MaxValue / 2, int.MaxValue) / int.MaxValue;
-                samples[i].Cluster = c.Cluster;
-            }
-
-            LoadSamples();
         }
 
         private void MouseWheelEvent(object sender, MouseEventArgs e) {
@@ -179,7 +106,7 @@ namespace DataAnalysis {
             SolidBrush brush = new SolidBrush(Color.Red);
             pen.Color = Color.Black;
 
-            foreach (Sample s in rotated) {
+            foreach (Sample s in engine.Rotated) {
                 Vector4 v = new Vector4(s.Vector.Data) + new Vector4(new double[] { 0, 0, perspectiveOffset, 0 });
 
                 float circleDiameter = (float)(7 + (visualize4thD ? v[3] * 2 : 0));
@@ -196,7 +123,7 @@ namespace DataAnalysis {
                 brush.Color = Color.Black;
                 e.Graphics.FillEllipse(brush, x - circleDiameter / 2 - (s.Center ? 1.5f : 0.5f), y - circleDiameter / 2 - (s.Center ? 1.5f : 0.5f), circleDiameter + (s.Center ? 3 : 1), circleDiameter + (s.Center ? 3 : 1));
 
-                brush.Color = HslColor((int)((double)s.Cluster / clusterCount * 239), 239, 120);
+                brush.Color = HslColor((int)((double)s.Cluster / engine.ClusterCount * 239), 239, 120);
                 e.Graphics.FillEllipse(brush, x - circleDiameter / 2, y - circleDiameter / 2, circleDiameter, circleDiameter);
             }
 
@@ -208,7 +135,7 @@ namespace DataAnalysis {
                 brush.Color = Color.FromArgb(128, Color.Black);
                 e.Graphics.FillRectangle(brush, rect);
 
-                string info = string.Format("Scale={0}, alphaX1={1}, alphaY1={2}, alphaX2={3}, alphaY2={4}, Param={5}, ClusterCount={6}", scaleFactor, alphaX1, alphaY1, alphaX2, alphaY2, alg.Param, clusterCount);
+                string info = string.Format("Scale={0}, alphaX1={1}, alphaY1={2}, alphaX2={3}, alphaY2={4}, Param={5}, ClusterCount={6}", scaleFactor, engine.AlphaX1, engine.AlphaY1, engine.AlphaX2, engine.AlphaY2, engine.alg.Param, engine.ClusterCount);
 
                 brush.Color = Color.White;
                 e.Graphics.DrawString(info, font, brush, rect);
@@ -221,13 +148,8 @@ namespace DataAnalysis {
 
             scaleFactor = 75.0f;
 
-            alphaX1 = 0;
-            alphaY1 = 0;
-
-            alphaX2 = 0;
-            alphaY2 = 0;
-
-            Rotate();
+            engine.ResetAngles();
+            engine.Rotate();
         }
 
         private bool IsFullscreen() {
@@ -258,10 +180,10 @@ namespace DataAnalysis {
 
             ((ToolStripMenuItem)sender).Checked = true;
 
-            alg = new MaxMin();
-            LoadSamples();
+            engine.alg = new MaxMin();
+            engine.LoadSamples();
 
-            trackBar.Value = (int)(100 * alg.Param);
+            trackBar.Value = (int)(100 * engine.alg.Param);
         }
 
         private void kMeansToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -270,10 +192,10 @@ namespace DataAnalysis {
 
             ((ToolStripMenuItem)sender).Checked = true;
 
-            alg = new KMeans();
-            LoadSamples();
+            engine.alg = new KMeans();
+            engine.LoadSamples();
 
-            trackBar.Value = (int)(100 * alg.Param);
+            trackBar.Value = (int)(100 * engine.alg.Param);
         }
 
         private void perceptronToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -284,11 +206,11 @@ namespace DataAnalysis {
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e) {
-            LoadData();
+            engine.LoadData();
         }
 
         private void randomizeToolStripMenuItem_Click(object sender, EventArgs e) {
-            RandomizeData();
+            engine.RandomizeData();
         }
 
         private void perspectiveToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -316,12 +238,12 @@ namespace DataAnalysis {
         }
 
         private void activeToolStripMenuItem_Click(object sender, EventArgs e) {
-            algorithmActive = !algorithmActive;
-            Calculate();
+            engine.AlgorithmActive = !engine.AlgorithmActive;
+            engine.Calculate();
         }
 
         private void showInfoToolStripMenuItem1_Click(object sender, EventArgs e) {
-            MessageBox.Show(alg.Info, "Info");
+            MessageBox.Show(engine.alg.Info, "Info");
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -329,8 +251,8 @@ namespace DataAnalysis {
         }
 
         private void TrackBarValueChanged(object sender, EventArgs e) {
-            alg.Param = trackBar.Value / 100.0;
-            Calculate();
+            engine.alg.Param = trackBar.Value / 100.0;
+            engine.Calculate();
         }
 
         private void MouseMoveEvent(object sender, MouseEventArgs e) {
@@ -338,15 +260,8 @@ namespace DataAnalysis {
                 offsetX += (e.Location.X - lastPos.X) / scaleFactor;
                 offsetY += (e.Location.Y - lastPos.Y) / scaleFactor;
             } else if (e.Button == MouseButtons.Right) {
-                if (ModifierKeys == Keys.Control) {
-                    alphaX2 += (e.Location.X - lastPos.X) / 400.0f;
-                    alphaY2 += (e.Location.Y - lastPos.Y) / 400.0f;
-                } else {
-                    alphaX1 += (e.Location.X - lastPos.X) / 400.0f;
-                    alphaY1 += (e.Location.Y - lastPos.Y) / 400.0f;
-                }
-
-                Rotate();
+                engine.UpdateAngles(new Point(e.Location.X - lastPos.X, e.Location.Y - lastPos.Y), ModifierKeys == Keys.Control);
+                engine.Rotate();
             }
 
             lastPos = e.Location;
@@ -371,50 +286,6 @@ namespace DataAnalysis {
 
             e.Handled = true;
             e.SuppressKeyPress = true;
-        }
-
-        private void Rotate() {
-            Matrix4x4 xMatrix1 = new Matrix4x4(new double[4, 4] {
-                { Math.Cos(alphaX1), 0, -Math.Sin(alphaX1), 0 },
-                { 0,                 1, 0,                  0 },
-                { Math.Sin(alphaX1), 0, Math.Cos(alphaX1),  0 },
-                { 0,                 0, 0,                  1 }
-            });
-
-            Matrix4x4 yMatrix1 = new Matrix4x4(new double[4, 4] {
-                { 1, 0,                 0,                  0 },
-                { 0, Math.Cos(alphaY1), -Math.Sin(alphaY1), 0 },
-                { 0, Math.Sin(alphaY1), Math.Cos(alphaY1),  0 },
-                { 0, 0,                 0,                  1 }
-            });
-
-            Matrix4x4 xMatrix2 = new Matrix4x4(new double[4, 4] {
-                { Math.Cos(alphaX2), 0, 0, -Math.Sin(alphaX2) },
-                { 0,                 1, 0, 0                  },
-                { 0,                 0, 1, 0                  },
-                { Math.Sin(alphaX2), 0, 0, Math.Cos(alphaX2)  }
-            });
-
-            Matrix4x4 yMatrix2 = new Matrix4x4(new double[4, 4] {
-                { 1, 0,                 0, 0                  },
-                { 0, Math.Cos(alphaY2), 0, -Math.Sin(alphaY2) },
-                { 0, 0,                 1, 0                  },
-                { 0, Math.Sin(alphaY2), 0, Math.Cos(alphaY2)  }
-            });
-
-            rotated = samples.Select(s => s.Clone()).ToArray();
-
-            foreach (Sample s in rotated) {
-                s.Vector -= center;
-
-                xMatrix2.Map(s.Vector);
-                yMatrix2.Map(s.Vector);
-
-                xMatrix1.Map(s.Vector);
-                yMatrix1.Map(s.Vector);
-            }
-
-            rotated = rotated.OrderByDescending(s => s.Vector[2]).ToArray();
         }
     }
 }
