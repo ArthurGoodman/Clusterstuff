@@ -3,6 +3,12 @@ using System.Linq;
 
 namespace DataAnalysis {
     class MaxMin : IAlgorithm {
+        public string Info {
+            get {
+                return "No info.";
+            }
+        }
+        
         private double alpha = 0.5;
         public double Param {
             get {
@@ -17,12 +23,6 @@ namespace DataAnalysis {
         public Sample[] Samples { get; set; }
 
         private CenterSet centers;
-
-        public string Info {
-            get {
-                return "No info.";
-            }
-        }
 
         public MaxMin() {
             centers = new CenterSet(this);
@@ -41,7 +41,7 @@ namespace DataAnalysis {
 
             while (true) {
                 Tuple<double, Sample> max = Samples
-                    .Where(s => !s.Center)
+                    .Where(s => !s.Mark)
                     .Select(s => new Tuple<double, Sample>(centers.Distances(s).Min(), s))
                     .Max();
 
@@ -52,7 +52,7 @@ namespace DataAnalysis {
             }
 
             foreach (Sample s in Samples) {
-                if (s.Center)
+                if (s.Mark)
                     continue;
 
                 centers.Assign(s);

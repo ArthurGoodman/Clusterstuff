@@ -6,7 +6,7 @@ namespace DataAnalysis {
     class DataEngine {
         private static string fileName = @"..\..\iris.dat";
 
-        public IAlgorithm alg = new MaxMin();
+        private IAlgorithm alg = new MaxMin();
         public IAlgorithm Alg {
             get {
                 return alg;

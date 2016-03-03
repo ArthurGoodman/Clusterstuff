@@ -121,7 +121,7 @@ namespace DataAnalysis {
                 int y = MapY((float)v[1]);
 
                 brush.Color = Color.Black;
-                e.Graphics.FillEllipse(brush, x - circleDiameter / 2 - (s.Center ? 1.5f : 0.5f), y - circleDiameter / 2 - (s.Center ? 1.5f : 0.5f), circleDiameter + (s.Center ? 3 : 1), circleDiameter + (s.Center ? 3 : 1));
+                e.Graphics.FillEllipse(brush, x - circleDiameter / 2 - (s.Mark ? 1.5f : 0.5f), y - circleDiameter / 2 - (s.Mark ? 1.5f : 0.5f), circleDiameter + (s.Mark ? 3 : 1), circleDiameter + (s.Mark ? 3 : 1));
 
                 brush.Color = HslColor((int)((double)s.Cluster / engine.ClusterCount * 239), 239, 120);
                 e.Graphics.FillEllipse(brush, x - circleDiameter / 2, y - circleDiameter / 2, circleDiameter, circleDiameter);
@@ -135,7 +135,7 @@ namespace DataAnalysis {
                 brush.Color = Color.FromArgb(128, Color.Black);
                 e.Graphics.FillRectangle(brush, rect);
 
-                string info = string.Format("Scale={0}, alphaX1={1}, alphaY1={2}, alphaX2={3}, alphaY2={4}, Param={5}, ClusterCount={6}", scaleFactor, engine.AlphaX1, engine.AlphaY1, engine.AlphaX2, engine.AlphaY2, engine.alg.Param, engine.ClusterCount);
+                string info = string.Format("Scale={0}, alphaX1={1}, alphaY1={2}, alphaX2={3}, alphaY2={4}, Param={5}, ClusterCount={6}", scaleFactor, engine.AlphaX1, engine.AlphaY1, engine.AlphaX2, engine.AlphaY2, engine.Alg.Param, engine.ClusterCount);
 
                 brush.Color = Color.White;
                 e.Graphics.DrawString(info, font, brush, rect);
@@ -180,10 +180,10 @@ namespace DataAnalysis {
 
             ((ToolStripMenuItem)sender).Checked = true;
 
-            engine.alg = new MaxMin();
+            engine.Alg = new MaxMin();
             engine.LoadSamples();
 
-            trackBar.Value = (int)(100 * engine.alg.Param);
+            trackBar.Value = (int)(100 * engine.Alg.Param);
         }
 
         private void kMeansToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -192,10 +192,10 @@ namespace DataAnalysis {
 
             ((ToolStripMenuItem)sender).Checked = true;
 
-            engine.alg = new KMeans();
+            engine.Alg = new KMeans();
             engine.LoadSamples();
 
-            trackBar.Value = (int)(100 * engine.alg.Param);
+            trackBar.Value = (int)(100 * engine.Alg.Param);
         }
 
         private void perceptronToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -203,6 +203,11 @@ namespace DataAnalysis {
             kMeansToolStripMenuItem.Checked = false;
 
             ((ToolStripMenuItem)sender).Checked = true;
+
+            engine.Alg = new Perceptron();
+            engine.LoadSamples();
+
+            trackBar.Value = (int)(100 * engine.Alg.Param);
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -243,7 +248,7 @@ namespace DataAnalysis {
         }
 
         private void showInfoToolStripMenuItem1_Click(object sender, EventArgs e) {
-            MessageBox.Show(engine.alg.Info, "Info");
+            MessageBox.Show(engine.Alg.Info, "Info");
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -251,7 +256,7 @@ namespace DataAnalysis {
         }
 
         private void TrackBarValueChanged(object sender, EventArgs e) {
-            engine.alg.Param = trackBar.Value / 100.0;
+            engine.Alg.Param = trackBar.Value / 100.0;
             engine.Calculate();
         }
 

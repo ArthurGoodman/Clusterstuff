@@ -22,7 +22,7 @@ namespace DataAnalysis {
         }
 
         public void Add(Sample sample) {
-            sample.Center = true;
+            sample.Mark = true;
             sample.Cluster = nextCluster++;
             centers.Add(sample);
         }
@@ -59,7 +59,7 @@ namespace DataAnalysis {
 
         public void Forget() {
             foreach (Sample s in centers)
-                s.Center = false;
+                s.Mark = false;
 
             centers.Clear();
         }

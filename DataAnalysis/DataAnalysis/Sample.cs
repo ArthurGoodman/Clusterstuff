@@ -7,7 +7,7 @@ namespace DataAnalysis {
     class Sample : IComparable {
         public Vector4 Vector { get; set; }
         public int Cluster { get; set; }
-        public bool Center { get; set; }
+        public bool Mark { get; set; }
 
         public static Sample[] Load(string fileName) {
             string[] lines = File.ReadAllLines(fileName);
@@ -51,13 +51,13 @@ namespace DataAnalysis {
 
         public void Reset() {
             Cluster = 0;
-            Center = false;
+            Mark = false;
         }
 
         public Sample Clone() {
             Sample clone = new Sample(Vector.Data);
             clone.Cluster = Cluster;
-            clone.Center = Center;
+            clone.Mark = Mark;
             return clone;
         }
     }

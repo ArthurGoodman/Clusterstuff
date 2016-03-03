@@ -2,6 +2,12 @@
 
 namespace DataAnalysis {
     class KMeans : IAlgorithm {
+        public string Info {
+            get {
+                return "No info.";
+            }
+        }
+
         private int k = 3;
         public double Param {
             get {
@@ -14,12 +20,6 @@ namespace DataAnalysis {
         }
 
         public Sample[] Samples { get; set; }
-
-        public string Info {
-            get {
-                return "No info.";
-            }
-        }
 
         private CenterSet centers;
         private CenterSet newCenters;
