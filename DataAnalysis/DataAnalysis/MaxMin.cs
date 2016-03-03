@@ -18,15 +18,9 @@ namespace DataAnalysis {
 
         private CenterSet centers;
 
-        public int ClusterCount {
-            get {
-                return centers.Count;
-            }
-        }
-
         public string Info {
             get {
-                throw new NotImplementedException();
+                return "No info.";
             }
         }
 

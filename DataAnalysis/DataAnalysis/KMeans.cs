@@ -2,12 +2,6 @@
 
 namespace DataAnalysis {
     public class KMeans : IAlgorithm {
-        public int ClusterCount {
-            get {
-                return k;
-            }
-        }
-
         private int k = 3;
         public double Param {
             get {
@@ -23,7 +17,7 @@ namespace DataAnalysis {
 
         public string Info {
             get {
-                throw new NotImplementedException();
+                return "No info.";
             }
         }
 

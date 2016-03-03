@@ -1,7 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace DataAnalysis {
-    public class Vector4 {
+    public class Vector4 : IComparable {
         public double[] Data { get; private set; }
 
         public Vector4() {
@@ -64,6 +65,10 @@ namespace DataAnalysis {
                     return false;
 
             return true;
+        }
+
+        public int CompareTo(object obj) {
+            return Data[0].CompareTo((obj as Vector4).Data[0]);
         }
     }
 }

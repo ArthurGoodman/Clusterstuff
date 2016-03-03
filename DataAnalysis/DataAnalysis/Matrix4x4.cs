@@ -1,4 +1,6 @@
-﻿namespace DataAnalysis {
+﻿using System;
+
+namespace DataAnalysis {
     class Matrix4x4 {
         private double[,] data;
 
@@ -16,8 +18,7 @@
                     mapped[i] += data[i, j] * v[j];
             }
 
-            for (int i = 0; i < 4; i++)
-                v[i] = mapped[i];
+            mapped.CopyTo(v.Data, 0);
         }
     }
 }

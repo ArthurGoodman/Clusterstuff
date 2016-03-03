@@ -31,6 +31,7 @@ namespace DataAnalysis {
         private double perspectiveOffset = 7;
 
         private Vector4 center;
+        private int clusterCount;
 
         public Form() {
             InitializeComponent();
@@ -82,12 +83,19 @@ namespace DataAnalysis {
         private void Calculate() {
             if (algorithmActive) {
                 alg.Run();
-                Rotate();
+                CountClusters();
             }
+
+            Rotate();
+        }
+
+        private void CountClusters() {
+            clusterCount = samples.Select(s => s.Cluster).Max() + 1;
         }
 
         private void LoadSamples() {
             CalculateCenter();
+            CountClusters();
 
             alg.Samples = samples;
             Calculate();
@@ -107,12 +115,19 @@ namespace DataAnalysis {
 
             int i = 0;
 
-            foreach (Sample s in centers)
-                samples[i] = centers[i++] = new Sample(new double[] { r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max });
+            foreach (Sample s in centers) {
+                samples[i] = centers[i] = new Sample(new double[] { r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max });
+                centers[i].Cluster = i;
+                i++;
+            }
 
             for (; i < samples.Length; i++) {
                 samples[i] = new Sample(new double[] { r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max });
-                samples[i].Vector += (centers[r.Next() % centers.Length].Vector - samples[i].Vector) * r.Next(int.MaxValue / 2, int.MaxValue) / int.MaxValue;
+
+                Sample c = centers[r.Next() % centers.Length];
+
+                samples[i].Vector += (c.Vector - samples[i].Vector) * r.Next(int.MaxValue / 2, int.MaxValue) / int.MaxValue;
+                samples[i].Cluster = c.Cluster;
             }
 
             LoadSamples();
@@ -181,7 +196,7 @@ namespace DataAnalysis {
                 brush.Color = Color.Black;
                 e.Graphics.FillEllipse(brush, x - circleDiameter / 2 - (s.Center ? 1.5f : 0.5f), y - circleDiameter / 2 - (s.Center ? 1.5f : 0.5f), circleDiameter + (s.Center ? 3 : 1), circleDiameter + (s.Center ? 3 : 1));
 
-                brush.Color = HslColor((int)((double)s.Cluster / alg.ClusterCount * 239), 239, 120);
+                brush.Color = HslColor((int)((double)s.Cluster / clusterCount * 239), 239, 120);
                 e.Graphics.FillEllipse(brush, x - circleDiameter / 2, y - circleDiameter / 2, circleDiameter, circleDiameter);
             }
 
@@ -193,7 +208,7 @@ namespace DataAnalysis {
                 brush.Color = Color.FromArgb(128, Color.Black);
                 e.Graphics.FillRectangle(brush, rect);
 
-                string info = string.Format("Scale={0}, alphaX1={1}, alphaY1={2}, alphaX2={3}, alphaY2={4}, Param={5}, ClusterCount={6}", scaleFactor, alphaX1, alphaY1, alphaX2, alphaY2, alg.Param, alg.ClusterCount);
+                string info = string.Format("Scale={0}, alphaX1={1}, alphaY1={2}, alphaX2={3}, alphaY2={4}, Param={5}, ClusterCount={6}", scaleFactor, alphaX1, alphaY1, alphaX2, alphaY2, alg.Param, clusterCount);
 
                 brush.Color = Color.White;
                 e.Graphics.DrawString(info, font, brush, rect);
@@ -268,15 +283,6 @@ namespace DataAnalysis {
             ((ToolStripMenuItem)sender).Checked = true;
         }
 
-        private void activeToolStripMenuItem_Click(object sender, EventArgs e) {
-            algorithmActive = !algorithmActive;
-            Calculate();
-        }
-
-        private void showInfoToolStripMenuItem1_Click(object sender, EventArgs e) {
-            MessageBox.Show(alg.Info);
-        }
-
         private void loadToolStripMenuItem_Click(object sender, EventArgs e) {
             LoadData();
         }
@@ -303,6 +309,23 @@ namespace DataAnalysis {
 
         private void resetToolStripMenuItem_Click(object sender, EventArgs e) {
             Reset();
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e) {
+            MessageBox.Show("Data Analysis v3", "About");
+        }
+
+        private void activeToolStripMenuItem_Click(object sender, EventArgs e) {
+            algorithmActive = !algorithmActive;
+            Calculate();
+        }
+
+        private void showInfoToolStripMenuItem1_Click(object sender, EventArgs e) {
+            MessageBox.Show(alg.Info, "Info");
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
+            Close();
         }
 
         private void TrackBarValueChanged(object sender, EventArgs e) {
