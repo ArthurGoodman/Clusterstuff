@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Clusterstuff {
+namespace DataAnalysis {
     public class Sample : IComparable {
         private static int counter = 0;
 

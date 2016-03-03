@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Clusterstuff {
+namespace DataAnalysis {
     public class KMeans : IClusteringAlgorithm {
         public int ClusterCount {
             get {

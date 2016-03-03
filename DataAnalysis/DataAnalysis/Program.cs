@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace Visualizer {
+namespace DataAnalysis {
     static class Program {
         [STAThread]
         static void Main() {

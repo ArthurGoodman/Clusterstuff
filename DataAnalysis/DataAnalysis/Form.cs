@@ -1,14 +1,13 @@
-﻿using Clusterstuff;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace Visualizer {
+namespace DataAnalysis {
     public partial class Form : System.Windows.Forms.Form {
-        private static string fileName = @"..\..\..\Clusterstuff\iris.dat";
+        private static string fileName = @"..\..\iris.dat";
 
         private Sample[] samples;
         private Sample[] rotated;

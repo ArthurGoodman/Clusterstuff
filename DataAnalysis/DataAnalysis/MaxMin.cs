@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Clusterstuff {
+namespace DataAnalysis {
     public class MaxMin : IClusteringAlgorithm {
         private double alpha = 0.5;
         public double Param {

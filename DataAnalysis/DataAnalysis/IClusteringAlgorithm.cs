@@ -1,4 +1,4 @@
-﻿namespace Clusterstuff {
+﻿namespace DataAnalysis {
     public interface IClusteringAlgorithm {
         double Param { get; set; }
         int ClusterCount { get; }

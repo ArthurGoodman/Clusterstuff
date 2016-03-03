@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace Clusterstuff {
+namespace DataAnalysis {
     public class Vector4 {
         public double[] Data { get; private set; }
 

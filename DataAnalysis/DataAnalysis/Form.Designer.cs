@@ -1,4 +1,4 @@
-﻿namespace Visualizer {
+﻿namespace DataAnalysis {
     partial class Form {
         /// <summary>
         /// Required designer variable.
@@ -30,8 +30,19 @@
             this.label = new System.Windows.Forms.Label();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.algorithmToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.randomizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.visualizationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.perspectiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clusterizationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.classificatinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.activeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showInfoToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.maxMinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.kMeansToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.perceptronToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -112,7 +123,9 @@
             // menuStrip
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.algorithmToolStripMenuItem});
+            this.algorithmToolStripMenuItem,
+            this.dataToolStripMenuItem,
+            this.visualizationToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(284, 24);
@@ -122,11 +135,90 @@
             // algorithmToolStripMenuItem
             // 
             this.algorithmToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.maxMinToolStripMenuItem,
-            this.kMeansToolStripMenuItem});
+            this.clusterizationToolStripMenuItem,
+            this.classificatinToolStripMenuItem,
+            this.activeToolStripMenuItem,
+            this.showInfoToolStripMenuItem1});
             this.algorithmToolStripMenuItem.Name = "algorithmToolStripMenuItem";
             this.algorithmToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
             this.algorithmToolStripMenuItem.Text = "Algorithm";
+            // 
+            // dataToolStripMenuItem
+            // 
+            this.dataToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.loadToolStripMenuItem,
+            this.randomizeToolStripMenuItem});
+            this.dataToolStripMenuItem.Name = "dataToolStripMenuItem";
+            this.dataToolStripMenuItem.Size = new System.Drawing.Size(43, 20);
+            this.dataToolStripMenuItem.Text = "Data";
+            // 
+            // loadToolStripMenuItem
+            // 
+            this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.loadToolStripMenuItem.Text = "Load";
+            // 
+            // randomizeToolStripMenuItem
+            // 
+            this.randomizeToolStripMenuItem.Name = "randomizeToolStripMenuItem";
+            this.randomizeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.randomizeToolStripMenuItem.Text = "Randomize";
+            // 
+            // visualizationToolStripMenuItem
+            // 
+            this.visualizationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.perspectiveToolStripMenuItem,
+            this.showInfoToolStripMenuItem});
+            this.visualizationToolStripMenuItem.Name = "visualizationToolStripMenuItem";
+            this.visualizationToolStripMenuItem.Size = new System.Drawing.Size(85, 20);
+            this.visualizationToolStripMenuItem.Text = "Visualization";
+            // 
+            // perspectiveToolStripMenuItem
+            // 
+            this.perspectiveToolStripMenuItem.Checked = true;
+            this.perspectiveToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.perspectiveToolStripMenuItem.Name = "perspectiveToolStripMenuItem";
+            this.perspectiveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.perspectiveToolStripMenuItem.Text = "Perspective";
+            // 
+            // showInfoToolStripMenuItem
+            // 
+            this.showInfoToolStripMenuItem.Checked = true;
+            this.showInfoToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.showInfoToolStripMenuItem.Name = "showInfoToolStripMenuItem";
+            this.showInfoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.showInfoToolStripMenuItem.Text = "Show Info";
+            // 
+            // clusterizationToolStripMenuItem
+            // 
+            this.clusterizationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.maxMinToolStripMenuItem,
+            this.kMeansToolStripMenuItem});
+            this.clusterizationToolStripMenuItem.Name = "clusterizationToolStripMenuItem";
+            this.clusterizationToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.clusterizationToolStripMenuItem.Text = "Clusterization";
+            // 
+            // classificatinToolStripMenuItem
+            // 
+            this.classificatinToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.perceptronToolStripMenuItem});
+            this.classificatinToolStripMenuItem.Name = "classificatinToolStripMenuItem";
+            this.classificatinToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.classificatinToolStripMenuItem.Text = "Classification";
+            // 
+            // activeToolStripMenuItem
+            // 
+            this.activeToolStripMenuItem.Checked = true;
+            this.activeToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.activeToolStripMenuItem.Name = "activeToolStripMenuItem";
+            this.activeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.activeToolStripMenuItem.Text = "Active";
+            // 
+            // showInfoToolStripMenuItem1
+            // 
+            this.showInfoToolStripMenuItem1.Name = "showInfoToolStripMenuItem1";
+            this.showInfoToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.showInfoToolStripMenuItem1.Text = "Show Info";
             // 
             // maxMinToolStripMenuItem
             // 
@@ -134,15 +226,19 @@
             this.maxMinToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.maxMinToolStripMenuItem.Name = "maxMinToolStripMenuItem";
             this.maxMinToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.maxMinToolStripMenuItem.Text = "MaxMin";
-            this.maxMinToolStripMenuItem.Click += new System.EventHandler(this.CreateMaxMin);
+            this.maxMinToolStripMenuItem.Text = "Max-Min";
             // 
             // kMeansToolStripMenuItem
             // 
             this.kMeansToolStripMenuItem.Name = "kMeansToolStripMenuItem";
             this.kMeansToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.kMeansToolStripMenuItem.Text = "K-Means";
-            this.kMeansToolStripMenuItem.Click += new System.EventHandler(this.CreateKMeans);
+            // 
+            // perceptronToolStripMenuItem
+            // 
+            this.perceptronToolStripMenuItem.Name = "perceptronToolStripMenuItem";
+            this.perceptronToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.perceptronToolStripMenuItem.Text = "Perceptron";
             // 
             // Form
             // 
@@ -152,7 +248,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.menuStrip);
             this.Name = "Form";
-            this.Text = "Clusterstuff";
+            this.Text = "Data Analysis";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyDownEvent);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -175,8 +271,19 @@
         private System.Windows.Forms.Label label;
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem algorithmToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem visualizationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem randomizeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dataToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showInfoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem perspectiveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clusterizationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem maxMinToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem kMeansToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem classificatinToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem perceptronToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem activeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showInfoToolStripMenuItem1;
     }
 }
 

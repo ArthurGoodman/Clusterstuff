@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Clusterstuff {
+namespace DataAnalysis {
     class CenterSet : IEnumerable {
         private List<Sample> centers;
         private int nextCluster = 0;

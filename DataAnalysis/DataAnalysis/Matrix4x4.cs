@@ -1,6 +1,4 @@
-﻿using Clusterstuff;
-
-namespace Visualizer {
+﻿namespace DataAnalysis {
     class Matrix4x4 {
         private double[,] data;
 
