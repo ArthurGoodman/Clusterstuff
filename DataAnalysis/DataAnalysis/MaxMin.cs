@@ -20,7 +20,7 @@ namespace DataAnalysis {
             }
         }
 
-        public Sample[] Samples { get; set; }
+        public DataSet Samples { get; set; }
 
         private CenterSet centers;
 
@@ -40,7 +40,7 @@ namespace DataAnalysis {
             centers.Add(Samples[0]);
 
             while (true) {
-                Tuple<double, Sample> max = Samples
+                Tuple<double, Sample> max = Samples.Data
                     .Where(s => !s.Mark)
                     .Select(s => new Tuple<double, Sample>(centers.Distances(s).Min(), s))
                     .Max();

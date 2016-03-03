@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="CenterSet.cs" />
     <Compile Include="DataEngine.cs" />
+    <Compile Include="DataSet.cs" />
     <Compile Include="Form.cs">
       <SubType>Form</SubType>
     </Compile>

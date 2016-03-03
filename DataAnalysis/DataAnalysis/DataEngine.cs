@@ -4,8 +4,6 @@ using System.Linq;
 
 namespace DataAnalysis {
     class DataEngine {
-        private static string fileName = @"..\..\iris.dat";
-
         private IAlgorithm alg = new MaxMin();
         public IAlgorithm Alg {
             get {
@@ -17,8 +15,8 @@ namespace DataAnalysis {
             }
         }
 
-        public Sample[] Samples { get; set; }
-        public Sample[] Rotated { get; private set; }
+        public DataSet Samples { get; set; }
+        public DataSet Rotated { get; private set; }
 
         public int ClusterCount { get; private set; }
 
@@ -33,6 +31,9 @@ namespace DataAnalysis {
 
         public DataEngine() {
             AlgorithmActive = true;
+
+            Samples = new DataSet();
+            Rotated = new DataSet();
         }
 
         public void Calculate() {
@@ -62,38 +63,16 @@ namespace DataAnalysis {
         }
 
         public void CountClusters() {
-            ClusterCount = Samples.Select(s => s.Cluster).Max() + 1;
+            ClusterCount = Samples.Data.Select(s => s.Cluster).Max() + 1;
         }
 
         public void LoadData() {
-            Samples = Sample.Load(fileName);
+            Samples.Load();
             LoadSamples();
         }
 
         public void RandomizeData() {
-            const int max = 5;
-            Random r = new Random();
-
-            Samples = new Sample[500];
-            Sample[] centers = new Sample[r.Next(3, 6)];
-
-            int i = 0;
-
-            foreach (Sample s in centers) {
-                Samples[i] = centers[i] = new Sample(new double[] { r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max });
-                centers[i].Cluster = i;
-                i++;
-            }
-
-            for (; i < Samples.Length; i++) {
-                Samples[i] = new Sample(new double[] { r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max });
-
-                Sample c = centers[r.Next() % centers.Length];
-
-                Samples[i].Vector += (c.Vector - Samples[i].Vector) * r.Next(int.MaxValue / 2, int.MaxValue) / int.MaxValue;
-                Samples[i].Cluster = c.Cluster;
-            }
-
+            Samples.Randomize();
             LoadSamples();
         }
 
@@ -143,7 +122,7 @@ namespace DataAnalysis {
                 { 0, Math.Sin(AlphaY2), 0, Math.Cos(AlphaY2)  }
             });
 
-            Rotated = Samples.Select(s => s.Clone()).ToArray();
+            Rotated.Data = Samples.Data.Select(s => s.Clone()).ToArray();
 
             foreach (Sample s in Rotated) {
                 s.Vector -= center;
@@ -155,7 +134,7 @@ namespace DataAnalysis {
                 yMatrix1.Map(s.Vector);
             }
 
-            Rotated = Rotated.OrderByDescending(s => s.Vector[2]).ToArray();
+            Rotated.Data = Rotated.Data.OrderByDescending(s => s.Vector[2]).ToArray();
         }
     }
 }

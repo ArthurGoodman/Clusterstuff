@@ -19,7 +19,9 @@ namespace DataAnalysis {
             }
         }
 
-        public Sample[] Samples { get; set; }
+        public DataSet Samples { get; set; }
+
+        //private double[] w;
 
         public void Run() {
         }

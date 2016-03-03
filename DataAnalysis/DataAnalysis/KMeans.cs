@@ -19,7 +19,7 @@ namespace DataAnalysis {
             }
         }
 
-        public Sample[] Samples { get; set; }
+        public DataSet Samples { get; set; }
 
         private CenterSet centers;
         private CenterSet newCenters;

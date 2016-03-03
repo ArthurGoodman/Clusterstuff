@@ -2,7 +2,7 @@
     interface IAlgorithm {
         double Param { get; set; }
         string Info { get; }
-        Sample[] Samples { get; set; }
+        DataSet Samples { get; set; }
 
         void Run();
     }
