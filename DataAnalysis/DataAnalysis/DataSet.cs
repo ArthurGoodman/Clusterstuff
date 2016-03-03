@@ -73,9 +73,9 @@ namespace DataAnalysis {
                 Data[i].Cluster = c.Cluster;
             }
         }
-        
-        public Vector4 CalculateCenter() {
-            Vector4 center = new Vector4();
+
+        public Vector CalculateCenter() {
+            Vector center = new Vector(4);
 
             foreach (Sample s in Data)
                 center += s.Vector;

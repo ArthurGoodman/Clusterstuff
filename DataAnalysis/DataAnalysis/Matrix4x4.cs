@@ -6,7 +6,7 @@
             this.data = data;
         }
 
-        public void Map(Vector4 v) {
+        public void Map(Vector v) {
             double[] mapped = new double[4];
 
             for (int i = 0; i < 4; i++) {

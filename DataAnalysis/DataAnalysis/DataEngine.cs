@@ -27,7 +27,7 @@ namespace DataAnalysis {
         public float AlphaX2 { get; private set; }
         public float AlphaY2 { get; private set; }
 
-        private Vector4 center { get; set; }
+        private Vector center { get; set; }
 
         public DataEngine() {
             AlgorithmActive = true;

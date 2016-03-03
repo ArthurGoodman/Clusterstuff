@@ -107,7 +107,7 @@ namespace DataAnalysis {
             pen.Color = Color.Black;
 
             foreach (Sample s in engine.Rotated) {
-                Vector4 v = new Vector4(s.Vector.Data) + new Vector4(new double[] { 0, 0, perspectiveOffset, 0 });
+                Vector v = new Vector(s.Vector.Data) + new Vector(new double[] { 0, 0, perspectiveOffset, 0 });
 
                 float circleDiameter = (float)(7 + (visualize4thD ? v[3] * 2 : 0));
 
@@ -135,7 +135,7 @@ namespace DataAnalysis {
                 brush.Color = Color.FromArgb(128, Color.Black);
                 e.Graphics.FillRectangle(brush, rect);
 
-                string info = string.Format("Scale={0}, alphaX1={1}, alphaY1={2}, alphaX2={3}, alphaY2={4}, Param={5}, ClusterCount={6}", scaleFactor, engine.AlphaX1, engine.AlphaY1, engine.AlphaX2, engine.AlphaY2, engine.Alg.Param, engine.ClusterCount);
+                string info = string.Format("Scale={0}, alphaX1={1}, alphaY1={2}, alphaX2={3}, alphaY2={4}, Param={5}, ClusterCount={6}, Active={7}", scaleFactor, engine.AlphaX1, engine.AlphaY1, engine.AlphaX2, engine.AlphaY2, engine.Alg.Param, engine.ClusterCount, engine.AlgorithmActive);
 
                 brush.Color = Color.White;
                 e.Graphics.DrawString(info, font, brush, rect);
