@@ -1,4 +1,6 @@
-﻿namespace DataAnalysis {
+﻿using System;
+
+namespace DataAnalysis {
     class Perceptron : IAlgorithm {
         public string Info {
             get {
@@ -13,7 +15,7 @@
             }
 
             set {
-                lambda = value * 2;
+                lambda = Math.Max(0, Math.Min(value, 1)) * 2;
             }
         }
 

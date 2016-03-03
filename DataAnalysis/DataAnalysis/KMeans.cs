@@ -15,7 +15,7 @@ namespace DataAnalysis {
             }
 
             set {
-                k = Math.Max(1, (int)(value * 20));
+                k = Math.Max(1, (int)(Math.Max(0, Math.Min(value, 1)) * 20));
             }
         }
 

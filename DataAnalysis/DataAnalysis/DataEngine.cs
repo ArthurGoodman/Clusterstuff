@@ -18,10 +18,9 @@ namespace DataAnalysis {
         }
 
         public Sample[] Samples { get; set; }
-        public Sample[] Rotated { get; set; }
+        public Sample[] Rotated { get; private set; }
 
-        public Vector4 Center { get; set; }
-        public int ClusterCount { get; set; }
+        public int ClusterCount { get; private set; }
 
         public bool AlgorithmActive { get; set; }
 
@@ -29,6 +28,8 @@ namespace DataAnalysis {
         public float AlphaY1 { get; private set; }
         public float AlphaX2 { get; private set; }
         public float AlphaY2 { get; private set; }
+
+        private Vector4 center { get; set; }
 
         public DataEngine() {
             AlgorithmActive = true;
@@ -52,12 +53,12 @@ namespace DataAnalysis {
         }
 
         public void CalculateCenter() {
-            Center = new Vector4();
+            center = new Vector4();
 
             foreach (Sample s in Samples)
-                Center += s.Vector;
+                center += s.Vector;
 
-            Center /= Samples.Length;
+            center /= Samples.Length;
         }
 
         public void CountClusters() {
@@ -145,7 +146,7 @@ namespace DataAnalysis {
             Rotated = Samples.Select(s => s.Clone()).ToArray();
 
             foreach (Sample s in Rotated) {
-                s.Vector -= Center;
+                s.Vector -= center;
 
                 xMatrix2.Map(s.Vector);
                 yMatrix2.Map(s.Vector);
