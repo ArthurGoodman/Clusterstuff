@@ -54,16 +54,11 @@ namespace DataAnalysis {
         }
 
         public void CalculateCenter() {
-            center = new Vector4();
-
-            foreach (Sample s in Samples)
-                center += s.Vector;
-
-            center /= Samples.Length;
+            center = Samples.CalculateCenter();
         }
 
         public void CountClusters() {
-            ClusterCount = Samples.Data.Select(s => s.Cluster).Max() + 1;
+            ClusterCount = Samples.CountClusters();
         }
 
         public void LoadData() {

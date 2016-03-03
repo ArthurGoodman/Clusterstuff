@@ -64,7 +64,7 @@ namespace DataAnalysis {
                 i++;
             }
 
-            for (; i < Data.Length; i++) {
+            for (; i < Length; i++) {
                 Data[i] = new Sample(new double[] { r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max, r.NextDouble() * max });
 
                 Sample c = centers[r.Next() % centers.Length];
@@ -72,6 +72,19 @@ namespace DataAnalysis {
                 Data[i].Vector += (c.Vector - Data[i].Vector) * r.Next(int.MaxValue / 2, int.MaxValue) / int.MaxValue;
                 Data[i].Cluster = c.Cluster;
             }
+        }
+        
+        public Vector4 CalculateCenter() {
+            Vector4 center = new Vector4();
+
+            foreach (Sample s in Data)
+                center += s.Vector;
+
+            return center / Length;
+        }
+
+        public int CountClusters() {
+            return Data.Select(s => s.Cluster).Max() + 1;
         }
 
         public IEnumerator GetEnumerator() {

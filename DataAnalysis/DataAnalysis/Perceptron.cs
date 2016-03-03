@@ -21,7 +21,7 @@ namespace DataAnalysis {
 
         public DataSet Samples { get; set; }
 
-        //private double[] w;
+        private double[] w;
 
         public void Run() {
         }
