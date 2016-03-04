@@ -7,12 +7,12 @@
         }
 
         public void Map(Vector v) {
-            double[] mapped = new double[4];
+            double[] mapped = new double[v.Size];
 
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < v.Size; i++) {
                 mapped[i] = 0;
 
-                for (int j = 0; j < 4; j++)
+                for (int j = 0; j < v.Size; j++)
                     mapped[i] += data[i, j] * v[j];
             }
 

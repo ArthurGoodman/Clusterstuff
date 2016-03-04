@@ -10,6 +10,10 @@ namespace DataAnalysis {
             Vector = new Vector(data);
         }
 
+        public Sample(int size) {
+            Vector = new Vector(size);
+        }
+
         public double Distance(Sample other) {
             double squaredDist = 0;
 

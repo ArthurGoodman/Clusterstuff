@@ -28,7 +28,6 @@ namespace DataAnalysis {
 
         private Vector[] w;
         private Sample[] data;
-        private List<double> d;
 
         private int iterations;
 
@@ -42,13 +41,28 @@ namespace DataAnalysis {
             BuildInfo();
         }
 
+        private int MaxIndex(IEnumerable<double> set) {
+            double max = double.MinValue;
+            int maxIndex = -1;
+
+            int i = 0;
+            foreach (double d in set) {
+                if (d > max) {
+                    max = d;
+                    maxIndex = i;
+                }
+
+                i++;
+            }
+
+            return maxIndex;
+        }
+
         private delegate void ActionFunction(int index, int maxIndex);
 
         private void Iterate(ActionFunction f) {
-            for (int i = 0; i < data.Length; i++) {
-                d = w.Select(v => v.Dot(data[i].Vector)).ToList();
-                f(i, d.IndexOf(d.Max()));
-            }
+            for (int i = 0; i < data.Length; i++)
+                f(i, MaxIndex(w.Select(v => v.Dot(data[i].Vector))));
         }
 
         private void Initialize() {
