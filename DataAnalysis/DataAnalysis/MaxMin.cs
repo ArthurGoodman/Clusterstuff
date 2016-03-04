@@ -3,9 +3,10 @@ using System.Linq;
 
 namespace DataAnalysis {
     class MaxMin : IAlgorithm {
+        private string info = "No info.";
         public string Info {
             get {
-                return "No info.";
+                return info;
             }
         }
         
@@ -32,6 +33,8 @@ namespace DataAnalysis {
             if (Samples.Length == 0)
                 return;
 
+            int iterations = 0;
+
             centers.Reset();
 
             foreach (Sample s in Samples)
@@ -45,10 +48,13 @@ namespace DataAnalysis {
                     .Select(s => new Tuple<double, Sample>(centers.Distances(s).Min(), s))
                     .Max();
 
+                iterations++;
+
                 if (max == null || max.Item1 <= centers.TypicalDistance())
                     break;
 
                 centers.Add(max.Item2);
+
             }
 
             foreach (Sample s in Samples) {
@@ -57,6 +63,8 @@ namespace DataAnalysis {
 
                 centers.Assign(s);
             }
+
+            info = string.Format("{0} iterations", iterations);
         }
     }
 }

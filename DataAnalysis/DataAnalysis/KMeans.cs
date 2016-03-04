@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Windows.Forms;
 
 namespace DataAnalysis {
     class KMeans : IAlgorithm {
+        private string info = "No info.";
         public string Info {
             get {
-                return "No info.";
+                return info;
             }
         }
 
@@ -47,6 +49,8 @@ namespace DataAnalysis {
             for (int i = 0; i < k; i++)
                 centers.Add(Samples[i].Clone());
 
+            int iterations = 0;
+
             while (true) {
                 foreach (Sample s in Samples)
                     centers.Assign(s);
@@ -54,11 +58,9 @@ namespace DataAnalysis {
                 newCenters.Reset();
 
                 int[] clusterSizes = new int[k];
-
-                for (int i = 0; i < k; i++) {
-                    newCenters.Add(centers[i].Clone());
-                    clusterSizes[i] = 1;
-                }
+                
+                for (int i = 0; i < k; i++)
+                    newCenters.Add(new Sample(new double[5]));
 
                 foreach (Sample s in Samples) {
                     newCenters[s.Cluster].Vector += s.Vector;
@@ -78,7 +80,11 @@ namespace DataAnalysis {
                     break;
 
                 Swap();
+
+                iterations++;
             }
+
+            info = string.Format("{0} iterations", iterations);
         }
     }
 }

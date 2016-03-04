@@ -28,20 +28,27 @@ namespace DataAnalysis {
 
         private Vector[] w;
         private Sample[] data;
+        private List<double> d;
 
         private int iterations;
 
         public void Run() {
             Initialize();
 
-            int i;
-            for (i = 0; i < maxLearningEpochs && !Learn(); i++) {
+            for (iterations = 0; iterations < maxLearningEpochs && !Learn(); iterations++) {
             }
-
-            iterations = i;
 
             Mark();
             BuildInfo();
+        }
+
+        private delegate void ActionFunction(int index, int maxIndex);
+
+        private void Iterate(ActionFunction f) {
+            for (int i = 0; i < data.Length; i++) {
+                d = w.Select(v => v.Dot(data[i].Vector)).ToList();
+                f(i, d.IndexOf(d.Max()));
+            }
         }
 
         private void Initialize() {
@@ -56,38 +63,22 @@ namespace DataAnalysis {
         private bool Learn() {
             bool corrected = false;
 
-            List<double> d;
-
-            foreach (Sample s in data) {
-                d = w.Select(v => v.Dot(s.Vector)).ToList();
-
-                double max = d.Max();
-                int maxIndex = d.IndexOf(max);
-
-                if (maxIndex != s.Cluster) {
+            Iterate((index, maxIndex) => {
+                if (maxIndex != data[index].Cluster) {
                     corrected = true;
 
-                    Vector delta = s.Vector * c;
+                    Vector delta = data[index].Vector * c;
 
-                    w[s.Cluster] += delta;
+                    w[data[index].Cluster] += delta;
                     w[maxIndex] -= delta;
                 }
-            }
+            });
 
             return !corrected;
         }
 
         private void Mark() {
-            List<double> d;
-
-            for (int i = 0; i < data.Length; i++) {
-                d = w.Select(v => v.Dot(data[i].Vector)).ToList();
-
-                double max = d.Max();
-                int maxIndex = d.IndexOf(max);
-
-                Samples[i].Mark = maxIndex != data[i].Cluster;
-            }
+            Iterate((index, maxIndex) => Samples[index].Mark = maxIndex != data[index].Cluster);
         }
 
         private void BuildInfo() {
