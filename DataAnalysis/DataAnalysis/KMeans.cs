@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Windows.Forms;
 
 namespace DataAnalysis {
     class KMeans : IAlgorithm {
+        private static int maxIterations = 100;
+
         private string info = "No info.";
         public string Info {
             get {
@@ -49,16 +50,15 @@ namespace DataAnalysis {
             for (int i = 0; i < k; i++)
                 centers.Add(Samples[i].Clone());
 
-            int iterations = 0;
-
-            while (true) {
+            int iterations;
+            for (iterations = 0; iterations < maxIterations; iterations++) {
                 foreach (Sample s in Samples)
                     centers.Assign(s);
 
                 newCenters.Reset();
 
                 int[] clusterSizes = new int[k];
-                
+
                 for (int i = 0; i < k; i++)
                     newCenters.Add(new Sample(5));
 
@@ -75,8 +75,6 @@ namespace DataAnalysis {
                 for (; j < k; j++)
                     if (!newCenters[j].Vector.Equals(centers[j].Vector))
                         break;
-                
-                iterations++;
 
                 if (j == k)
                     break;
