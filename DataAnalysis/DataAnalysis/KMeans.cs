@@ -2,8 +2,6 @@
 
 namespace DataAnalysis {
     class KMeans : IAlgorithm {
-        private static int maxIterations = 100;
-
         private string info = "No info.";
         public string Info {
             get {
@@ -50,8 +48,8 @@ namespace DataAnalysis {
             for (int i = 0; i < k; i++)
                 centers.Add(Samples[i].Clone());
 
-            int iterations;
-            for (iterations = 0; iterations < maxIterations; iterations++) {
+            int iterations = 0;
+            while (true) {
                 foreach (Sample s in Samples)
                     centers.Assign(s);
 
@@ -68,7 +66,9 @@ namespace DataAnalysis {
                 }
 
                 for (int i = 0; i < k; i++)
-                    newCenters[i].Vector /= clusterSizes[i];
+                    newCenters[i].Vector /= Math.Max(clusterSizes[i], 1);
+
+                iterations++;
 
                 int j = 0;
 
