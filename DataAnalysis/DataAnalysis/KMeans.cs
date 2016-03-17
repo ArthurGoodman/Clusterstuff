@@ -60,7 +60,7 @@ namespace DataAnalysis {
                 int[] clusterSizes = new int[k];
 
                 for (int i = 0; i < k; i++)
-                    newCenters.Add(new Sample(5));
+                    newCenters.Add(new Sample(4));
 
                 foreach (Sample s in Samples) {
                     newCenters[s.Cluster].Vector += s.Vector;
