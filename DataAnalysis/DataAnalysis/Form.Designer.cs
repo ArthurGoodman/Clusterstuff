@@ -37,6 +37,7 @@
             this.clusterizationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.maxMinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.kMeansToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.kMeansModToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.classificatinToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.perceptronToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -189,9 +190,10 @@
             // 
             this.clusterizationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.maxMinToolStripMenuItem,
-            this.kMeansToolStripMenuItem});
+            this.kMeansToolStripMenuItem,
+            this.kMeansModToolStripMenuItem});
             this.clusterizationToolStripMenuItem.Name = "clusterizationToolStripMenuItem";
-            this.clusterizationToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.clusterizationToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.clusterizationToolStripMenuItem.Text = "Clusterization";
             // 
             // maxMinToolStripMenuItem
@@ -199,23 +201,30 @@
             this.maxMinToolStripMenuItem.Checked = true;
             this.maxMinToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.maxMinToolStripMenuItem.Name = "maxMinToolStripMenuItem";
-            this.maxMinToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.maxMinToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.maxMinToolStripMenuItem.Text = "Max-Min";
             this.maxMinToolStripMenuItem.Click += new System.EventHandler(this.maxMinToolStripMenuItem_Click);
             // 
             // kMeansToolStripMenuItem
             // 
             this.kMeansToolStripMenuItem.Name = "kMeansToolStripMenuItem";
-            this.kMeansToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.kMeansToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.kMeansToolStripMenuItem.Text = "K-Means";
             this.kMeansToolStripMenuItem.Click += new System.EventHandler(this.kMeansToolStripMenuItem_Click);
+            // 
+            // kMeansModToolStripMenuItem
+            // 
+            this.kMeansModToolStripMenuItem.Name = "kMeansModToolStripMenuItem";
+            this.kMeansModToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.kMeansModToolStripMenuItem.Text = "Max-Min Mod";
+            this.kMeansModToolStripMenuItem.Click += new System.EventHandler(this.maxMinModToolStripMenuItem_Click);
             // 
             // classificatinToolStripMenuItem
             // 
             this.classificatinToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.perceptronToolStripMenuItem});
             this.classificatinToolStripMenuItem.Name = "classificatinToolStripMenuItem";
-            this.classificatinToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.classificatinToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.classificatinToolStripMenuItem.Text = "Classification";
             // 
             // perceptronToolStripMenuItem
@@ -381,6 +390,7 @@
         private System.Windows.Forms.ToolStripMenuItem activeToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem kMeansModToolStripMenuItem;
     }
 }
 

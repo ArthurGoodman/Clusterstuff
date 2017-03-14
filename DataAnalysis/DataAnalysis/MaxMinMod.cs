@@ -2,7 +2,7 @@
 using System.Linq;
 
 namespace DataAnalysis {
-    class MaxMin : IAlgorithm {
+    class MaxMinMod : IAlgorithm {
         private string info = "No info.";
         public string Info {
             get {
@@ -25,7 +25,7 @@ namespace DataAnalysis {
 
         private CenterSet centers;
 
-        public MaxMin() {
+        public MaxMinMod() {
             centers = new CenterSet(this);
         }
 
@@ -45,7 +45,7 @@ namespace DataAnalysis {
             while (true) {
                 Tuple<double, Sample> max = Samples.Data
                     .Where(s => !s.Mark)
-                    .Select(s => new Tuple<double, Sample>(centers.Distances(s).Min(), s))
+                    .Select(s => new Tuple<double, Sample>(centers.ChebyshevDistances(s).Min(), s))
                     .Max();
 
                 iterations++;

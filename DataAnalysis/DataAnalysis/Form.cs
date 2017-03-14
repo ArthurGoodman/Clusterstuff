@@ -24,6 +24,7 @@ namespace DataAnalysis {
         private double perspectiveOffset = 7;
 
         private bool tabPressed = false;
+        private bool f1Pressed = false;
 
         public Form() {
             InitializeComponent();
@@ -143,7 +144,7 @@ namespace DataAnalysis {
                 e.Graphics.DrawString(info, font, brush, rect);
             }
 
-            if (tabPressed) {
+            if (tabPressed || f1Pressed) {
                 Rectangle rect = new Rectangle(ClientSize.Width / 2 - ClientSize.Width / 4, ClientSize.Height / 2 - ClientSize.Height / 4, ClientSize.Width / 2, ClientSize.Height / 2);
 
                 brush.Color = Color.FromArgb(128, Color.Black);
@@ -155,7 +156,7 @@ namespace DataAnalysis {
                 format.LineAlignment = StringAlignment.Center;
 
                 brush.Color = Color.White;
-                e.Graphics.DrawString(engine.Alg.Info, font, brush, rect, format);
+                e.Graphics.DrawString(tabPressed ? engine.Alg.Info : engine.Info, font, brush, rect, format);
             }
         }
 
@@ -202,6 +203,10 @@ namespace DataAnalysis {
                 case Keys.Tab:
                     tabPressed = true;
                     break;
+
+                case Keys.F1:
+                    f1Pressed = true;
+                    break;
             }
 
             e.Handled = true;
@@ -212,6 +217,10 @@ namespace DataAnalysis {
             switch (e.KeyCode) {
                 case Keys.Tab:
                     tabPressed = false;
+                    break;
+
+                case Keys.F1:
+                    f1Pressed = false;
                     break;
             }
 
@@ -243,40 +252,33 @@ namespace DataAnalysis {
             KeyUpEvent(sender, e);
         }
 
-        private void maxMinToolStripMenuItem_Click(object sender, EventArgs e) {
-            kMeansToolStripMenuItem.Checked = false;
-            perceptronToolStripMenuItem.Checked = false;
+        private void setupAlgorithm(object sender, IAlgorithm alg) {
+            foreach (ToolStripMenuItem algItem in algorithmToolStripMenuItem.DropDownItems)
+                foreach (ToolStripMenuItem item in algItem.DropDownItems)
+                    item.Checked = false;
 
             ((ToolStripMenuItem)sender).Checked = true;
 
-            engine.Alg = new MaxMin();
+            engine.Alg = alg;
             engine.LoadSamples();
 
             trackBar.Value = (int)(100 * engine.Alg.Param);
+        }
+
+        private void maxMinToolStripMenuItem_Click(object sender, EventArgs e) {
+            setupAlgorithm(sender, new MaxMin());
         }
 
         private void kMeansToolStripMenuItem_Click(object sender, EventArgs e) {
-            maxMinToolStripMenuItem.Checked = false;
-            perceptronToolStripMenuItem.Checked = false;
+            setupAlgorithm(sender, new KMeans());
+        }
 
-            ((ToolStripMenuItem)sender).Checked = true;
-
-            engine.Alg = new KMeans();
-            engine.LoadSamples();
-
-            trackBar.Value = (int)(100 * engine.Alg.Param);
+        private void maxMinModToolStripMenuItem_Click(object sender, EventArgs e) {
+            setupAlgorithm(sender, new MaxMinMod());
         }
 
         private void perceptronToolStripMenuItem_Click(object sender, EventArgs e) {
-            maxMinToolStripMenuItem.Checked = false;
-            kMeansToolStripMenuItem.Checked = false;
-
-            ((ToolStripMenuItem)sender).Checked = true;
-
-            engine.Alg = new Perceptron();
-            engine.LoadSamples();
-
-            trackBar.Value = (int)(100 * engine.Alg.Param);
+            setupAlgorithm(sender, new Perceptron());
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e) {

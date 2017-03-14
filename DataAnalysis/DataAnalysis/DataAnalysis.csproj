@@ -57,6 +57,7 @@
     </Compile>
     <Compile Include="IAlgorithm.cs" />
     <Compile Include="KMeans.cs" />
+    <Compile Include="MaxMinMod.cs" />
     <Compile Include="Matrix4x4.cs" />
     <Compile Include="MaxMin.cs" />
     <Compile Include="Perceptron.cs" />

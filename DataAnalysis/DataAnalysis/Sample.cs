@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace DataAnalysis {
     class Sample : IComparable {
@@ -21,6 +22,15 @@ namespace DataAnalysis {
                 squaredDist += (Vector[i] - other.Vector[i]) * (Vector[i] - other.Vector[i]);
 
             return Math.Sqrt(squaredDist);
+        }
+
+        public double ChebyshevDistance(Sample other) {
+            double[] d = new double[Math.Min(Vector.Size, other.Vector.Size)];
+
+            for (int i = 0; i < d.Length; i++)
+                d[i] = Math.Abs(Vector[i] - other.Vector[i]);
+
+            return d.Max();
         }
 
         public int CompareTo(object obj) {

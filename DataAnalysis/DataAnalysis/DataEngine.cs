@@ -15,6 +15,14 @@ namespace DataAnalysis {
             }
         }
 
+        public string Info {
+            get {
+                return "DaviesBoudlin: " + daviesBouldinIndex + "\n" +
+                       "SumOfMeans: " + sumOfMeans + "\n" +
+                       "ChebyshevSumOfMeans: " + chebyshevSumOfMeans;
+            }
+        }
+
         public DataSet Samples { get; set; }
         public DataSet Rotated { get; private set; }
 
@@ -28,6 +36,10 @@ namespace DataAnalysis {
         public float AlphaY2 { get; private set; }
 
         private Vector center { get; set; }
+
+        private double daviesBouldinIndex;
+        private double sumOfMeans;
+        private double chebyshevSumOfMeans;
 
         public DataEngine() {
             AlgorithmActive = true;
@@ -43,6 +55,10 @@ namespace DataAnalysis {
             }
 
             Rotate();
+
+            DaviesBouldin();
+            SumOfMeans();
+            ChebyshevSumOfMeans();
         }
 
         public void LoadSamples() {
@@ -130,6 +146,127 @@ namespace DataAnalysis {
             }
 
             Rotated.Data = Rotated.Data.OrderByDescending(s => s.Vector[2]).ToArray();
+        }
+
+        private void DaviesBouldin() {
+            double[] sigma = new double[ClusterCount];
+            int[] counts = new int[ClusterCount];
+
+            Sample[] centers = Samples.Data.Where(s => s.Mark).ToArray();
+
+            if (centers.Length == 0) {
+                centers = new Sample[ClusterCount];
+
+                for (int i = 0; i < ClusterCount; i++) {
+                    centers[i] = new Sample(new double[4]);
+
+                    foreach (Sample s in Samples.Data.Where(s => s.Cluster == i))
+                        centers[i].Vector += s.Vector;
+                }
+
+                for (int i = 0; i < ClusterCount; i++)
+                    centers[i].Vector /= Samples.Data.Where(s => s.Cluster == i).Count();
+            }
+
+            for (int i = 0; i < ClusterCount; i++)
+                foreach (Sample s in Samples.Data.Where(s => s.Cluster == i)) {
+                    sigma[i] += s.Distance(centers[i]);
+                    counts[i]++;
+                }
+
+            for (int i = 0; i < ClusterCount; i++)
+                sigma[i] /= counts[i];
+
+            daviesBouldinIndex = 0;
+
+            for (int i = 0; i < ClusterCount; i++) {
+                double k = 0;
+
+                for (int j = 0; j < ClusterCount; j++) {
+                    if (i == j)
+                        continue;
+
+                    k = Math.Max(k, (sigma[i] + sigma[j]) / centers[i].Distance(centers[j]));
+                }
+
+                daviesBouldinIndex += k;
+            }
+
+            daviesBouldinIndex /= ClusterCount;
+        }
+
+        private void SumOfMeans() {
+            double[] sigma = new double[ClusterCount];
+            int[] counts = new int[ClusterCount];
+
+            Sample[] centers = Samples.Data.Where(s => s.Mark).ToArray();
+
+            if (centers.Length == 0) {
+                centers = new Sample[ClusterCount];
+
+                for (int i = 0; i < ClusterCount; i++) {
+                    centers[i] = new Sample(new double[4]);
+
+                    foreach (Sample s in Samples.Data.Where(s => s.Cluster == i))
+                        centers[i].Vector += s.Vector;
+                }
+
+                for (int i = 0; i < ClusterCount; i++)
+                    centers[i].Vector /= Samples.Data.Where(s => s.Cluster == i).Count();
+            }
+
+            for (int i = 0; i < ClusterCount; i++)
+                foreach (Sample s in Samples.Data.Where(s => s.Cluster == i)) {
+                    sigma[i] += s.Distance(centers[i]);
+                    counts[i]++;
+                }
+
+            for (int i = 0; i < ClusterCount; i++)
+                sigma[i] /= counts[i];
+
+            sumOfMeans = 0;
+
+            for (int i = 0; i < ClusterCount; i++)
+                sumOfMeans += sigma[i];
+
+            sumOfMeans /= ClusterCount;
+        }
+
+        private void ChebyshevSumOfMeans() {
+            double[] sigma = new double[ClusterCount];
+            int[] counts = new int[ClusterCount];
+
+            Sample[] centers = Samples.Data.Where(s => s.Mark).ToArray();
+
+            if (centers.Length == 0) {
+                centers = new Sample[ClusterCount];
+
+                for (int i = 0; i < ClusterCount; i++) {
+                    centers[i] = new Sample(new double[4]);
+
+                    foreach (Sample s in Samples.Data.Where(s => s.Cluster == i))
+                        centers[i].Vector += s.Vector;
+                }
+
+                for (int i = 0; i < ClusterCount; i++)
+                    centers[i].Vector /= Samples.Data.Where(s => s.Cluster == i).Count();
+            }
+
+            for (int i = 0; i < ClusterCount; i++)
+                foreach (Sample s in Samples.Data.Where(s => s.Cluster == i)) {
+                    sigma[i] += s.ChebyshevDistance(centers[i]);
+                    counts[i]++;
+                }
+
+            for (int i = 0; i < ClusterCount; i++)
+                sigma[i] /= counts[i];
+
+            chebyshevSumOfMeans = 0;
+
+            for (int i = 0; i < ClusterCount; i++)
+                chebyshevSumOfMeans += sigma[i];
+
+            chebyshevSumOfMeans /= ClusterCount;
         }
     }
 }

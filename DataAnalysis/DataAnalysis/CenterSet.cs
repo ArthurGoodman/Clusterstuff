@@ -32,6 +32,11 @@ namespace DataAnalysis {
                 .Select(c => sample.Distance(c));
         }
 
+        public IEnumerable<double> ChebyshevDistances(Sample sample) {
+            return centers
+                .Select(c => sample.ChebyshevDistance(c));
+        }
+
         public void Assign(Sample sample) {
             sample.Cluster = centers
                 .Select(c => new Tuple<double, Sample>(sample.Distance(c), c))
